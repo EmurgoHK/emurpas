@@ -1,4 +1,9 @@
 <template name="App_home">
-  {{> hello}}
-  {{> info}}
+	<!--
+	5. After defining a schema, attaching it to the collection and defining a method that will be used on the form, it's time to create the form. Here we use quickForm template helper.
+
+	These are default options used for quickForm (autoForm), collection marks a collection used by the form (the collections has to have a schema attached),
+	id is the unique id of the form and it has to be unique site-wide, type and meteormethod are used as an interface to validated-methods that autoform can use
+	-->
+  	{{> quickForm collection="ExampleCollection" id="newExampleForm" type="method" meteormethod="newExample"}}
 </template>
