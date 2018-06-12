@@ -1,5 +1,5 @@
 import { Mongo } from 'meteor/mongo'
-import { Meteor } from 'meteor/meteor'
+// import { Meteor } from 'meteor/meteor'
 
 import SimpleSchema from 'simpl-schema'
 
