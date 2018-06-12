@@ -1,2 +1,2 @@
-import './fixtures'
+// import './fixtures'
 import './register-api'
