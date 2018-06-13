@@ -26,4 +26,4 @@ johanbrook:publication-collector  # Test a Meteor publication by collecting its 
 aldeed:autoform
 aldeed:collection2
 mdg:validated-method
-fourseven:scss
+fourseven:scss@3.13.0

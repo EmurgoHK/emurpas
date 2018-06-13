@@ -11,6 +11,8 @@ FlowRouter.route('/', {
   	name: 'App.home',
   	action() {
     	BlazeLayout.render('App_body', {
+			header: 'header',
+			sidebar: 'sidebar',
     		main: 'App_home'
     	})
   	}
