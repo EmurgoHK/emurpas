@@ -1,10 +1,15 @@
 <template name="App_body">
-  {{> Template.dynamic template=main}}
+  {{> Template.dynamic template=header}}
+  <div class="app-body">
+      {{> Template.dynamic template=sidebar}}
+    <main class="main">
+        {{> Template.dynamic template=main}}
+    </main> 
+  </div>
+  
 </template>
 
 <!-- added title -->
 
-<body>
-  <h2 class="form__title">Emurgo Project Appraisal System Form</h2>
-
+<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show pace-done pace-done">
 </body>

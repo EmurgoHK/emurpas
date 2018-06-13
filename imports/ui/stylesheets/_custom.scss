@@ -1,0 +1,42 @@
+//This file is to add custom styles for the form to improve UI
+
+header {
+    &.app-header {
+        border-bottom: 1px solid #23282c;
+    }
+    &.bg-dark {
+        background-color:  #23282c !important;
+    }
+
+    .navbar-nav {
+        li.nav-item {
+            a.nav-link {
+                &:hover {
+                    color: #fff;
+                }
+            }
+        }
+    }
+
+    button.navbar-toggler {
+        color: #73818f; 
+
+        &:hover {
+            color: #fff;
+            outline: 0; 
+        }
+
+        &:focus {
+            outline: 0; 
+        }
+    }
+
+    a.navbar-brand {
+        color: #fff;
+    }
+}
+.main {
+    .container-fluid {
+        padding-top: 30px;
+    }
+}
