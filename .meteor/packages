@@ -28,3 +28,6 @@ aldeed:collection2
 mdg:validated-method
 fourseven:scss
 underscore@1.0.10
+accounts-ui
+accounts-password
+arillo:flow-router-helpers

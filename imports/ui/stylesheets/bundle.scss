@@ -7,6 +7,10 @@
 // Bootstrap SASS library
 @import "{}/imports/ui/stylesheets/bootstrap/_bootstrap.scss";
 
+// Noty with custom theme
+@import "{}/node_modules/noty/src/noty.scss";
+@import "{}/imports/ui/stylesheets/theme/noty.scss";
+
 // Import Core UI variables and Mixins
 @import "{}/node_modules/@coreui/coreui/scss/_variables";
 @import "{}/node_modules/@coreui/coreui/scss/_mixins";

@@ -11,7 +11,7 @@ header {
     .navbar-nav {
         li.nav-item {
             a.nav-link {
-                &:hover {
+                &:hover, &:focus {
                     color: #fff;
                 }
             }
@@ -35,8 +35,13 @@ header {
         color: #fff;
     }
 }
+
 .main {
     .container-fluid {
         padding-top: 30px;
     }
+}
+
+.auth {
+    
 }
