@@ -4,6 +4,8 @@ const baseUrl = 'http://localhost:3000/login'
 describe('Sign in page', () => {
     it ('should have a \`Login\` header and subtitle', () => {
         browser.url(baseUrl)
+        browser.pause(6000)
+
         assert(browser.isExisting('h1=Login'), true)
         assert(browser.isVisible('h1=Login'), true)
 
@@ -13,6 +15,8 @@ describe('Sign in page', () => {
 
     it ('should redirect to login when user has an account', () => {
         browser.url(baseUrl)
+        browser.pause(6000)
+
         assert(browser.isExisting('#goToSignup'), true)
         assert(browser.isVisible('#goToSignup'), true)
 
@@ -22,6 +26,8 @@ describe('Sign in page', () => {
 
     it ('should login user and redirect to home', () => {
         browser.url(baseUrl)
+        browser.pause(6000)
+
         browser.execute(() => {
             Meteor.call('generateTestUser', (err, data) => {})
             return 'ok'
@@ -37,6 +43,8 @@ describe('Sign in page', () => {
 
         assert(browser.isExisting('#signOut'), true)
         assert(browser.isVisible('#signOut'), true)
+
+        browser.pause(3000)
         assert.equal(browser.getUrl(), 'http://localhost:3000/')
     })
 })

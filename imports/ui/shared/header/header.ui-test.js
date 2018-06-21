@@ -14,12 +14,14 @@ describe('Header when user isn\'t logged in', () => {
 
     it ('should redirect to login when sign in is clicked', () => {
         browser.click('a=Sign In')
+        browser.pause(3000)
         assert.equal(browser.getUrl(), 'http://localhost:3000/login')
         browser.url(baseUrl)
     })
 
     it('should hide sidebar when nav-bar toggler is clicked', () => {
         browser.click('button.d-md-down-none')
+        browser.pause(2000)
         assert(browser.isExisting('.sidebar'), false)
         assert(browser.isVisible('.sidebar'), false)
     })
@@ -49,12 +51,15 @@ describe('Header when user is logged in', () => {
     it ('should sign out user when signOut is clicked', () => {
         browser.click('#signOut')
         browser.pause(3000)
+
         assert(browser.isExisting('a=Sign In'), true)
         assert(browser.isVisible('a=Sign In'), true)
     })
 
     it('should hide sidebar when nav-bar toggler is clicked', () => {
         browser.click('button.d-md-down-none')
+        browser.pause(3000)
+        
         assert(browser.isExisting('.sidebar'), false)
         assert(browser.isVisible('.sidebar'), false)
     })
