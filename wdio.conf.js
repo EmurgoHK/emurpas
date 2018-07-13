@@ -6,7 +6,8 @@ exports.config = {
         browserName: 'chrome',
         chromeOptions: {
             args: ['--headless', '--disable-gpu', '--window-size=1280,800'],
-            binary: '/usr/bin/google-chrome-stable'
+            // binary: '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome',
+            binary: '/usr/bin/google-chrome-stable' 
         }
     }],
     sync: true,

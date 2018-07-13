@@ -42,6 +42,61 @@ header {
     }
 }
 
-.auth {
-    
+.help-block, {
+    color: #a94442;
+}
+
+button {
+    &.autoform-add-item, &.autoform-remove-item {
+        border: none;
+        background-color: transparent;
+        text-align: center;
+        padding: 0;
+
+        &:hover, &:focus, &:active {
+            border: none;
+            background-color: transparent;
+            text-align: center;
+        }
+
+        .glyphicon-plus {
+            color: #20a8d8;
+            font-size: 20px;
+
+            &:before {
+                content: "+";
+            }
+        }
+
+        .glyphicon-minus {
+            color: #f86c6b;
+            font-size: 20px;
+
+            &:before {
+                content: "x";
+            }
+        }
+    }
+}
+
+#projectQuestionsForm {
+    h3.panel-title {
+        display: none;
+    }
+
+    .autoform-array-item {
+        .panel-heading {
+            display: none;
+        }
+
+        .panel-body {
+            display: inline-flex;
+            justify-content: space-evenly;
+
+            .form-group {
+                width: 100%;
+                margin-right: 1rem;
+            }
+        }
+    }
 }
