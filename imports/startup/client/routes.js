@@ -3,6 +3,7 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout'
 
 // Import needed templates
 import '/imports/ui/pages/home/home'
+import '/imports/ui/pages/userInfo/userInfo'
 import '/imports/ui/pages/login/login'
 import '/imports/ui/pages/signup/signup'
 import '/imports/ui/pages/example/example'
@@ -32,6 +33,17 @@ FlowRouter.route('/', {
 			header: 'header',
 			sidebar: 'sidebar',
     		main: 'App_home'
+    	})
+  	}
+})
+
+FlowRouter.route('/userInfo', {
+  	name: 'userInfo',
+  	action: () => {
+    	BlazeLayout.render('App_body', {
+			header: 'header',
+			sidebar: 'sidebar',
+    		main: 'userInfo'
     	})
   	}
 })
