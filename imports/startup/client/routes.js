@@ -5,6 +5,7 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout'
 import '/imports/ui/pages/home/home'
 import '/imports/ui/pages/login/login'
 import '/imports/ui/pages/signup/signup'
+import '/imports/ui/pages/example/example'
 import '/imports/ui/pages/not-found/not-found'
 
 const userLoginFilter = (context, redirect, stop) => {
@@ -49,6 +50,17 @@ FlowRouter.route('/signup', {
 	action() {
 	  BlazeLayout.render('auth', {
 		  main: 'signup'
+	  })
+	}
+})
+
+FlowRouter.route('/example', {
+	name: 'example',
+	action() {
+	  BlazeLayout.render('App_body', {
+		  header: 'header',
+		  sidebar: 'sidebar',
+		  main: 'example'
 	  })
 	}
 })

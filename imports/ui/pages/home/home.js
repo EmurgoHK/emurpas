@@ -1,26 +1,52 @@
 import './home.html'
-
-import { ExampleCollection } from '/imports/api/example/exampleCollection'
-import { newExample } from '/imports/api/example/methods'
+import { Template } from "meteor/templating"
+import { ProjectQuestions } from '/imports/api/project-questions/project-questions'
 import { AutoForm } from 'meteor/aldeed:autoform'
+import { notify } from '/imports/modules/notifier'
 
-Template.App_home.onCreated(() => {
-	window.ExampleCollection = ExampleCollection // for autoform to work, all collections used must be in window scope
+const FIELDS_TO_OMIT = 'blockchain_use_reason,blockchain_requirement_reason';
+const BC_REQUIRE_RSN = 'blockchain_requirement_reason';
+const BC_USE_RSN = 'blockchain_use_reason';
+
+Template.App_home.onCreated(function() {
+	window.ProjectQuestions = ProjectQuestions
+	this.fieldsToOmit = new ReactiveVar(FIELDS_TO_OMIT)
+})
+
+Template.App_home.helpers({
+	fieldsToOmit() {
+		return Template.instance().fieldsToOmit.get();
+	}
+})
+
+Template.App_home.events({
+	'change input[type=radio][name=is_solvable_by_traditional_db]' (event, templateInstance) {
+		event.preventDefault()
+
+		switch (event.currentTarget.value) {
+			case "true":
+				templateInstance.fieldsToOmit.set(BC_REQUIRE_RSN)
+				break;
+			case "false":
+				templateInstance.fieldsToOmit.set(BC_USE_RSN)
+				break;
+			default:
+				templateInstance.fieldsToOmit.set(FIELDS_TO_OMIT)
+		}
+	}
 })
 
 // using AutoForm hooks, we can control error validation on the UI
-AutoForm.addHooks(['newExampleForm'], { // add some primitive error handling here
-	onError: (formType, error) => {
-		// this is an error caused by validation mismatch
-		alert(error) // we could use either noty notifications here, or inline error messages
+AutoForm.addHooks(['projectQuestionsForm'], { // add some primitive error handling here
+	onError: (_formType, error) => {
+		notify('Failed to save questions!', 'error')
 	},
 	after: {
-    	method: (error, result) => {
+    	method: (error, _result) => {
       		if (error) {
-      			// this is an error that ocurred when meteor method was being executed
-        		alert(error.reason)
+				notify(err.message, 'error')
       		} else {
-        		alert('Inserted successfully.')
+				notify('Inserted successfully.', 'success')
       		}
     	}
   	}

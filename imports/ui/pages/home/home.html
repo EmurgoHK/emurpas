@@ -1,11 +1,4 @@
 <template name="App_home">
-	
-	<!--
-	5. After defining a schema, attaching it to the collection and defining a method that will be used on the form, it's time to create the form. Here we use quickForm template helper.
-
-	These are default options used for quickForm (autoForm), collection marks a collection used by the form (the collections has to have a schema attached),
-	id is the unique id of the form and it has to be unique site-wide, type and meteormethod are used as an interface to validated-methods that autoform can use
-	-->
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-sm-12">
@@ -14,7 +7,7 @@
 						Emurgo Project Appraisal System Form
 					</div>
 					<div class="card-body">
-						{{> quickForm collection="ExampleCollection" id="newExampleForm" type="method" meteormethod="newExample"}}
+						{{> quickForm collection="ProjectQuestions" id="projectQuestionsForm" omitFields=fieldsToOmit type="method" meteormethod="addProjectQuestions" }}
 					</div>
 				</div>
 			</div>
