@@ -9,3 +9,6 @@ import '/imports/api/user/methods'
 
 // projects api
 import '/imports/api/project-questions/methods'
+
+// userinfo api
+import '/imports/api/userQuestions/methods'

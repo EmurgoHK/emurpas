@@ -1,0 +1,16 @@
+<template name="userInfo">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="card">
+					<div class="card-header">
+						Personal User Questions Form
+					</div>
+					<div class="card-body">
+						{{> quickForm collection="UserQuestions" id="userQuestionsForm" type="method" meteormethod="addUserInfo" }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
