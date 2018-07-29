@@ -12,6 +12,6 @@ export const addProjectQuestions = new ValidatedMethod({
     	filter: false
     }),
     run(newProjectQuestions) {
-        ProjectQuestions.insert(newProjectQuestions)
+        return ProjectQuestions.insert(newProjectQuestions)
     }
 })
