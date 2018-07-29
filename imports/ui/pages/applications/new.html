@@ -1,0 +1,16 @@
+<template name="newApplication">
+    <div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="card">
+					<div class="card-header">
+						Emurgo Project Appraisal System Form
+					</div>
+					<div class="card-body">
+						{{> quickForm collection="ProjectQuestions" id="projectQuestionsForm" omitFields=fieldsToOmit type="method" meteormethod="addProjectQuestions" }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
