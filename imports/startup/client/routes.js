@@ -60,7 +60,7 @@ FlowRouter.route('/userInfo', {
   	}
 })
 
-FlowRouter.route('/applications/new', {
+FlowRouter.route('/applications/:projectID?', {
 	name: 'newApplication',
 	action: () => {
 	  BlazeLayout.render('App_body', {

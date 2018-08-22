@@ -44,7 +44,7 @@ describe('project questions methods', () => {
             }]
         }
 
-        return callWithPromise('addProjectQuestions', data).then(infoId => {
+        return callWithPromise('saveProjectQuestions', {projectID: 'new', data: data, steps: { last: 'stepOne', next: 'stepTwo' }}).then(infoId => {
             let info = ProjectQuestions.findOne({
                 _id: infoId
             })

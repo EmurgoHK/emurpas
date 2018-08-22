@@ -1,10 +1,17 @@
 import { Mongo } from 'meteor/mongo'
-import { Tracker } from 'meteor/tracker';
 import SimpleSchema from 'simpl-schema'
 
-SimpleSchema.extendOptions(['autoform'])
-
 const ProjectQuestions = new Mongo.Collection('projectQuestions')
+
+SimpleSchema.extendOptions(['autoform']);
+
+if (Meteor.isServer) {
+    // This code only runs on the server
+    Meteor.publish('projectQuestions', function (projectID) {
+        return ProjectQuestions.find({ '_id' : projectID });
+    });
+}
+
 
 ProjectQuestions.schema = new SimpleSchema({
     problem_description: {

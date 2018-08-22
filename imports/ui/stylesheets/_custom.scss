@@ -100,3 +100,59 @@ button {
         }
     }
 }
+
+.wizard {
+    .steps {
+        margin: 25px auto;
+
+        ol {
+            @extend .nav; 
+            @extend .nav-tabs;
+            @extend .nav-justified;
+
+            li {
+                @extend .nav-item;
+
+                a {
+                    @extend .text-success;
+                    text-decoration: none;
+                    font-weight: bold;
+
+                    &:active, &:hover, &:focus {
+                        @extend .text-success;
+                        text-decoration: none;
+                        font-weight: bold;
+                    }
+                }
+
+                &:after {
+                    content: " ";
+                    opacity: 0;
+                    margin: 0 auto;
+                    bottom: 0px;
+                    border: 5px solid transparent;
+                    border-bottom-color: #5bc0de;
+                    vertical-align: middle;
+                    display: table;
+                    transition: 0.1s ease-in-out;
+                }
+
+                &.active {
+                    color: #5bc0de;
+                    font-weight: bold;
+
+                    &:after {
+                        content: " ";
+                        opacity: 1;
+                        margin: 0 auto;
+                        bottom: 0px;
+                        border: 10px solid transparent;
+                        border-bottom-color: #5bc0de;
+                        vertical-align: middle;
+                        display: table;
+                    }
+                }
+            }
+        }
+    }
+}

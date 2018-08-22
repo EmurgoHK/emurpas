@@ -8,12 +8,13 @@ allow-deny@1.1.0
 arillo:flow-router-helpers@0.5.2
 autoupdate@1.4.0
 babel-compiler@7.1.1
-babel-runtime@1.2.2
+babel-runtime@1.2.4
 base64@1.0.11
 binary-heap@1.0.10
 blaze@2.3.2
 blaze-html-templates@1.1.2
 blaze-tools@1.0.10
+blockrazor:subscache-c4@2.0.2
 boilerplate-generator@1.5.0
 caching-compiler@1.1.12
 caching-html-compiler@1.1.2
@@ -27,7 +28,7 @@ ddp-rate-limiter@1.0.7
 ddp-server@2.2.0
 deps@1.0.12
 diff-sequence@1.1.0
-dynamic-import@0.4.1
+dynamic-import@0.4.2
 ecmascript@0.11.1
 ecmascript-runtime@0.7.0
 ecmascript-runtime-client@0.7.1
@@ -35,6 +36,7 @@ ecmascript-runtime-server@0.7.0
 ejson@1.1.0
 email@1.2.3
 es5-shim@4.8.0
+forwarder:autoform-wizard@0.10.0
 fourseven:scss@4.9.0
 geojson-utils@1.0.10
 hot-code-push@1.0.4
@@ -63,7 +65,7 @@ minimongo@1.4.4
 mobile-experience@1.0.5
 mobile-status-bar@1.0.14
 modern-browsers@0.1.1
-modules@0.12.0
+modules@0.12.2
 modules-runtime@0.10.0
 momentjs:moment@2.22.2
 mongo@1.5.0
