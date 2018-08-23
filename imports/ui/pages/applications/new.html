@@ -6,8 +6,9 @@
 					<div class="card-header">
 						Emurgo Project Appraisal System Form
 					</div>
-					<div class="card-body">
-						{{> quickForm collection="ProjectQuestions" id="projectQuestionsForm" omitFields=fieldsToOmit type="method" meteormethod="addProjectQuestions" }}
+					<div class="card-body" style="padding-top: 0;">
+						{{> wizard id="basic-wizard" steps=steps buttonClasses="btn btn-primary"}}
+						<!-- {{> quickForm collection="ProjectQuestions" id="projectQuestionsForm" omitFields=fieldsToOmit type="method" meteormethod="addProjectQuestions" }} -->
 					</div>
 				</div>
 			</div>

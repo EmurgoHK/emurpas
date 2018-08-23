@@ -1,3 +1,4 @@
+import './config'
 import './routes'
 
 // import main templates
@@ -7,3 +8,6 @@ import "/imports/ui/shared/header/header.js"
 import "/imports/ui/shared/sidebar/sidebar.js"
 
 import '/imports/modules/autoform-typeahead/autoform-typeahead'
+
+// Blaze helpers
+import "/imports/ui/helpers/handlebars-helpers.js"
