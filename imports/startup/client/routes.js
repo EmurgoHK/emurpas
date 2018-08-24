@@ -49,7 +49,7 @@ FlowRouter.route('/', {
   	}
 })
 
-FlowRouter.route('/userInfo', {
+FlowRouter.route('/userInfo/:userInfoID?', {
   	name: 'userInfo',
   	action: () => {
     	BlazeLayout.render('App_body', {

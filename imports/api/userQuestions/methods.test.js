@@ -28,7 +28,7 @@ describe('user questions methods', () => {
             employmentStatus: 'happily employed'
         }
 
-        return callWithPromise('addUserInfo', data).then(infoId => {
+        return callWithPromise('addUserInfo', {userInfoID: 'new', userInfo: data, steps: { last: 'stepOne', next: 'stepTwo' }}).then(infoId => {
             let info = UserQuestions.findOne({
                 _id: infoId
             })

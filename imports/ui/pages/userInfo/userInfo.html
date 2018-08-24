@@ -7,7 +7,8 @@
 						Personal User Questions Form
 					</div>
 					<div class="card-body">
-						{{> quickForm collection="UserQuestions" id="userQuestionsForm" type="method" meteormethod="addUserInfo" }}
+						{{> wizard id="user-info-wizard" steps=steps buttonClasses="btn btn-primary"}}
+						<!-- {{> quickForm collection="UserQuestions" id="userQuestionsForm" type="method" meteormethod="addUserInfo" }} -->
 					</div>
 				</div>
 			</div>
