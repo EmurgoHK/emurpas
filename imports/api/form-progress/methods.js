@@ -4,6 +4,7 @@ export const updateFormProgress = (formType, formTypeId, steps) => {
     let data = {}
     data.last_step = steps.last
     data.next_step = steps.next
+    data.status  = steps.final ? 'completed' : 'in-progress'
     data.updated_at = new Date().getTime()
 
     let formProgress = FormProgress.findOne({ 'form_type_id' : formTypeId })

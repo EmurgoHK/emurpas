@@ -5,7 +5,7 @@ import { ProjectQuestions } from '/imports/api/project-questions/project-questio
 import { FormProgress } from '/imports/api/form-progress/form-progress'
 import { saveProjectQuestions } from '/imports/api/project-questions/methods'
 // import { AutoForm } from 'meteor/aldeed:autoform'
-// import { notify } from '/imports/modules/notifier'
+import { notify } from '/imports/modules/notifier'
 
 const BC_REQUIRE_RSN = 'blockchain_requirement_reason';
 const BC_USE_RSN = 'blockchain_use_reason';
@@ -52,6 +52,11 @@ Template.newApplication.onRendered(function() {
 		
 	})
 })
+
+Template.newApplication.destroyed = function() {
+	this.wizard.clearData();
+	this.wizard.destroy();
+};
 
 Template.newApplication.helpers({
 	steps() {
@@ -116,13 +121,31 @@ Template.newApplication.events({
 
 		let steps = {}
 		let nextStep = activeStep.id
-		steps.last = activeStep.wizard._stepsByIndex[activeStep.wizard.indexOf(activeStep.id)-1]
-		steps.next = nextStep
+		let lastStep = tpl.wizard._stepsByIndex[tpl.wizard.indexOf(activeStep.id)-1]
+		let isFinalStep = false
 
-		saveProjectQuestions.call({ projectID: projectID, data: activeStep.wizard.mergedData(), steps: steps}, (err, resp) => {
+		if ($(event.target).find('.wizard-submit-button').length >= 1) {
+			isFinalStep = true
+		}
+
+		steps.last = lastStep
+		steps.next = nextStep
+		steps.final = isFinalStep
+
+		saveProjectQuestions.call({ projectID: projectID, data: tpl.wizard.mergedData(), steps: steps}, (err, resp) => {
 			if (!err) {
-				if (projectID !== resp) { FlowRouter.setParams({projectID: resp}) };
-				activeStep.wizard.next();
+				if (!isFinalStep) { 
+					if (projectID !== resp) 
+						FlowRouter.setParams({projectID: resp});
+
+					activeStep.wizard.next();
+					return
+				}
+
+				tpl.wizard.clearData();
+				tpl.wizard.destroy();
+				notify('Application complete', 'success');
+				FlowRouter.go('/');
 			}
 		})
 		

@@ -94,14 +94,32 @@ Template.userInfo.events({
 		let userInfoID = tpl.userInfoID === undefined ? 'new' : tpl.userInfoID
 
 		let steps = {}
+		let lastStep = activeStep.wizard._stepsByIndex[activeStep.wizard.indexOf(activeStep.id)-1]
 		let nextStep = activeStep.id
-		steps.last = activeStep.wizard._stepsByIndex[activeStep.wizard.indexOf(activeStep.id)-1]
+		let isFinalStep = false
+
+		if ($(event.target).find('.wizard-submit-button').length >= 1) {
+			isFinalStep = true
+		}
+
+		steps.last = lastStep
 		steps.next = nextStep
+		steps.final = isFinalStep
 
 		addUserInfo.call({ userInfoID: userInfoID, userInfo: activeStep.wizard.mergedData(), steps: steps}, (err, resp) => {
 			if (!err) {
-				if (userInfoID !== resp) { FlowRouter.setParams({userInfoID: resp}) };
-				activeStep.wizard.next();
+				if (!isFinalStep) { 
+					if (userInfoID !== resp)
+						FlowRouter.setParams({userInfoID: resp})
+
+					activeStep.wizard.next();
+					return
+				}
+
+				tpl.wizard.clearData();
+				tpl.wizard.destroy();
+				notify('Application complete', 'success');
+				FlowRouter.go('/');
 			}
 		})
 		
