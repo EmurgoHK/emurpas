@@ -8,8 +8,7 @@ if (Meteor.isServer) {
         if (formTypeID) {
             return FormProgress.find({ 'form_type_id': formTypeID });
         } else {
-            return FormProgress.find({ 'status': 'in-progress', user_id: this.userId });
-
+            return FormProgress.find({ 'status': 'in-progress', user_id: this.userId })
         }
     });
 }
