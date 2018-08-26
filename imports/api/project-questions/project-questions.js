@@ -7,8 +7,13 @@ SimpleSchema.extendOptions(['autoform']);
 
 if (Meteor.isServer) {
     // This code only runs on the server
-    Meteor.publish('projectQuestions', function (projectID) {
-        return ProjectQuestions.find({ '_id' : projectID });
+    Meteor.publish('projectQuestions', function(projectID) {
+
+        if (projectID) {
+            return ProjectQuestions.find({ '_id': projectID });
+        } else {
+            return ProjectQuestions.find({ 'createdBy': this.userId });
+        }
     });
 }
 
