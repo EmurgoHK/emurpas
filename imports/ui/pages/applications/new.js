@@ -19,7 +19,7 @@ Template.newApplication.onCreated(function() {
         this.subscribe('formProgress')
 
         //if an application exists redirect instead of creating a new one
-        let applicationExist = FormProgress.findOne({ 'status': 'in-progress' })
+        let applicationExist = FormProgress.findOne({ 'status': 'in-progress', form_type: 'project' })
         if (applicationExist) {
             FlowRouter.go('/applications/' + applicationExist.form_type_id)
         }
@@ -54,7 +54,6 @@ Template.newApplication.onRendered(function() {
 
 				wizard.setData(step.id, stepData)
 			}
-
 			wizard.show(progress.next_step)
 		}
 		
@@ -143,10 +142,11 @@ Template.newApplication.events({
 		saveProjectQuestions.call({ projectID: projectID, data: tpl.wizard.mergedData(), steps: steps}, (err, resp) => {
 			if (!err) {
 				if (!isFinalStep) { 
+					activeStep.wizard.next();
+
 					if (projectID !== resp) 
 						FlowRouter.setParams({projectID: resp});
 
-					activeStep.wizard.next();
 					return
 				}
 
