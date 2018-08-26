@@ -11,13 +11,21 @@ const BC_REQUIRE_RSN = 'blockchain_requirement_reason';
 const BC_USE_RSN = 'blockchain_use_reason';
 
 Template.newApplication.onCreated(function() {
-	window.ProjectQuestions = ProjectQuestions
-	this.projectID = () => FlowRouter.getParam("projectID")
+    window.ProjectQuestions = ProjectQuestions
+    this.projectID = () => FlowRouter.getParam("projectID")
 
-	this.autorun(() => {
-		this.subscribe('projectQuestions', FlowRouter.getParam("projectID"))
-		this.subscribe('formProgress', FlowRouter.getParam("projectID"))
-	})
+    this.autorun(() => {
+        this.subscribe('projectQuestions', FlowRouter.getParam("projectID"))
+        this.subscribe('formProgress')
+
+        //if an application exists redirect instead of creating a new one
+        let applicationExist = FormProgress.findOne({ 'status': 'in-progress' })
+        if (applicationExist) {
+            FlowRouter.go('/applications/' + applicationExist.form_type_id)
+        }
+    })
+
+
 })
 
 Template.newApplication.onRendered(function() {
