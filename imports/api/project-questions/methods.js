@@ -6,6 +6,8 @@ import { updateFormProgress } from '../form-progress/methods'
 
 import { FormProgress } from '../form-progress/form-progress'
 
+import { isModerator } from '/imports/api/user/methods'
+
 SimpleSchema.extendOptions(['autoform'])
 
 export const saveProjectQuestions = new ValidatedMethod({
@@ -24,6 +26,32 @@ export const saveProjectQuestions = new ValidatedMethod({
                 return projectID
             }
         }
+    }
+})
+
+export const removeProjectQuestions = new ValidatedMethod({
+	name: 'removeProjectQuestions',
+	validate: new SimpleSchema({
+		projectId: {
+			type: String,
+			optional: false
+		}
+	}).validator({
+    	clean: true,
+    	filter: false
+    }),
+    run({ projectId }) {
+    	if (Meteor.userId() && isModerator(Meteor.userId())) {
+    		ProjectQuestions.remove({
+    			_id: projectId
+    		})
+
+    		FormProgress.remove({
+    			form_type_id: projectId
+    		})
+    	} else {
+    		throw new Meteor.Error('Error', 'Insufficient permissions.')
+    	}
     }
 })
 

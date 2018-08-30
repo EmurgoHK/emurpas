@@ -1,20 +1,32 @@
 import { Mongo } from 'meteor/mongo'
 import SimpleSchema from 'simpl-schema'
 
+import { isModerator } from '/imports/api/user/methods'
+
 const ProjectQuestions = new Mongo.Collection('projectQuestions')
 
 SimpleSchema.extendOptions(['autoform']);
 
 if (Meteor.isServer) {
-    // This code only runs on the server
     Meteor.publish('projectQuestions', function(projectID) {
-
         if (projectID) {
-            return ProjectQuestions.find({ '_id': projectID });
+            return ProjectQuestions.find({ '_id': projectID, 'createdBy': this.userId })
         } else {
             return ProjectQuestions.find({ 'createdBy': this.userId });
         }
-    });
+    })
+
+    Meteor.publish('modProjectQuestions', (projectID) => {
+        if (Meteor.userId() && isModerator(Meteor.userId())) {
+            if (projectID) {
+                return ProjectQuestions.find({
+                    '_id': projectID
+                })
+            } else {
+                return ProjectQuestions.find({})
+            }
+        }
+    })
 }
 
 

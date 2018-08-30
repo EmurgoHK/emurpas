@@ -1,0 +1,28 @@
+<template name="modApplication">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                {{#if isModerator}}
+                <div class="card">
+                    <div class="card-header">
+                        {{#with application}}{{#if isInProgress}}<i title="In progress" class="icon-clock"></i>{{/if}} Application #{{_id}}{{/with}}
+                    </div>
+                    <div class="card-body">
+                        {{#each questions}}
+                        <b>{{question}}</b>
+                        <br/>
+                        {{answer}}
+                        <br />
+                        <br />
+                        {{/each}}
+                    </div>
+                </div>
+                <a class="btn btn-sm btn-secondary" href="/moderator/applications" role="button">Back</a>
+                <a class="btn btn-sm btn-danger js-remove" href="#" role="button">Remove</a>
+                {{else}}
+                <h1>This page is for moderators only.</h1>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</template>
