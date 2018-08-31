@@ -6,6 +6,7 @@ import '/imports/api/example/server/publications'
 
 // user api
 import '/imports/api/user/methods'
+import '/imports/api/user/server/accounts'
 import '/imports/api/user/server/publications'
 
 // projects api
