@@ -11,6 +11,10 @@ import '/imports/ui/pages/signup/signup'
 import '/imports/ui/pages/example/example'
 import '/imports/ui/pages/not-found/not-found'
 
+import '/imports/ui/pages/moderator/applications/modApplications'
+import '/imports/ui/pages/moderator/application/modApplication'
+import '/imports/ui/pages/moderator/users/modUsers'
+
 const userLoginFilter = (context, redirect, _stop) => {
 	let oldRoute = '/'
 	let authRoutes = ['/login', '/signup']
@@ -29,6 +33,11 @@ const userLoginFilter = (context, redirect, _stop) => {
 		redirect('/login')
 	}
 }
+
+const modRoutes = FlowRouter.group({
+	prefix: '/moderator',
+  	name: 'moderator'
+})
 
 // Redirect to login
 Accounts.onLogout((user) => {
@@ -99,6 +108,40 @@ FlowRouter.route('/example', {
 	  })
 	}
 })
+
+modRoutes.route('/applications', {
+    action: () => {
+        BlazeLayout.render('App_body', {
+          header: 'header',
+		  sidebar: 'sidebar',
+		  main: 'modApplications'
+        })
+    },
+    name: 'modApplications'
+})
+
+modRoutes.route('/application/:id', {
+    action: () => {
+        BlazeLayout.render('App_body', {
+          header: 'header',
+		  sidebar: 'sidebar',
+		  main: 'modApplication'
+        })
+    },
+    name: 'modApplication'
+})
+
+modRoutes.route('/users', {
+    action: () => {
+        BlazeLayout.render('App_body', {
+          header: 'header',
+		  sidebar: 'sidebar',
+		  main: 'modUsers'
+        })
+    },
+    name: 'modUsers'
+})
+
 
 FlowRouter.notFound = {
   	action() {

@@ -7,8 +7,8 @@ import { callWithPromise } from '/imports/api/utilities'
 import './methods'
 
 Meteor.userId = () => 'test-user' // override the meteor userId, so we can test methods that require a user
-Meteor.users.findOne = () => ({ profile: { name: 'Test User'} }) // stub user data as well
-Meteor.user = () => ({ profile: { name: 'Test User'} })
+Meteor.users.findOne = () => ({ moderator: true, profile: { name: 'Test User'} }) // stub user data as well
+Meteor.user = () => ({ moderator: true, profile: { name: 'Test User'} })
 
 describe('user questions methods', () => {
     it('can submit new data', () => {
