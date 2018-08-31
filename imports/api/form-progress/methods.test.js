@@ -5,21 +5,19 @@ import { FormProgress } from './form-progress'
 import { updateFormProgress } from './methods'
 
 Meteor.userId = () => 'test-user' // override the meteor userId, so we can test methods that require a user
-Meteor.users.findOne = () => ({ profile: { name: 'Test User'} }) // stub user data as well
-Meteor.user = () => ({ profile: { name: 'Test User'} })
+Meteor.users.findOne = () => ({ moderator: true, profile: { name: 'Test User'} }) // stub user data as well
+Meteor.user = () => ({ moderator: true, profile: { name: 'Test User'} })
 
 describe('form progress methods', () => {
     it('can track new user form progress', () => {
         var progress = FormProgress.find({}).fetch()
-        assert.isArray(progress, 'should be an empty array')
-        assert.equal(progress.length, 0)
 
         updateFormProgress('test', 'new', {last: '1', next: '2', final: false})
-        progress = FormProgress.find({}).fetch()
-        assert.equal(progress.length, 1)
-        assert.propertyVal(progress[0], 'status', 'in-progress');
-        assert.propertyVal(progress[0], 'form_type', 'test');
-        assert.propertyVal(progress[0], 'user_id', Meteor.userId());
+        progress = FormProgress.findOne({form_type: 'test'})
+        assert.ok(progress)
+        assert.propertyVal(progress, 'status', 'in-progress');
+        assert.propertyVal(progress, 'form_type', 'test');
+        assert.propertyVal(progress, 'user_id', Meteor.userId());
     })
 
     it('can update tracked form progress', () => {

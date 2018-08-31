@@ -7,8 +7,8 @@ import { callWithPromise } from '/imports/api/utilities'
 import './methods'
 
 Meteor.userId = () => 'test-user' // override the meteor userId, so we can test methods that require a user
-Meteor.users.findOne = () => ({ profile: { name: 'Test User'} }) // stub user data as well
-Meteor.user = () => ({ profile: { name: 'Test User'} })
+Meteor.users.findOne = () => ({ moderator: true, profile: { name: 'Test User'} }) // stub user data as well
+Meteor.user = () => ({ moderator: true, profile: { name: 'Test User'} })
 
 describe('project questions methods', () => {
     it('can submit new data', () => {
@@ -56,6 +56,20 @@ describe('project questions methods', () => {
                     assert.ok(info[i] === data[i])
                 }
             })
+        })
+    })
+
+    it ('moderator can remove submitted data', () => {
+        let pq = ProjectQuestions.findOne({})
+
+        assert.ok(pq)
+
+        return callWithPromise('removeProjectQuestions', {
+            projectId: pq._id
+        }).then(data => {
+            assert.notOk(ProjectQuestions.findOne({
+                _id: pq._id
+            }))
         })
     })
 

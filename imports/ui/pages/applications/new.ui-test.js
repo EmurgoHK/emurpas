@@ -87,6 +87,30 @@ describe('New application', function () {
         assert(browser.execute(() => FlowRouter.current().route.name === 'App.home').value, true)
     })
 
+    it ('should show up on the moderator panel', () => {
+        browser.url(`${baseUrl}/moderator/applications`)
+        browser.pause(6000)
+
+        assert(browser.execute(() => $('.documents-index-item').length > 0), true)
+    })
+
+    it ('moderator can view more details', () => {
+        browser.click('.btn-secondary')
+        browser.pause(6000)
+
+        assert(browser.execute(() => Number($('.card-body').text().trim().split(' ').pop()) > 0), true)
+    })
+
+    it ('moderator can remove an application', () => {
+        browser.click('.js-remove')
+        browser.pause(3000)
+
+        browser.click('.swal-button--confirm')
+        browser.pause(3000)
+
+        assert(browser.execute(() => FlowRouter.current().route.name === 'modApplications'), true)
+    })
+
     after(() => {
         browser.pause(3000)
 
