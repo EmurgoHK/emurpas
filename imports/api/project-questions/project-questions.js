@@ -64,13 +64,25 @@ ProjectQuestions.schema = new SimpleSchema({
         label: 'Have you made any attempts to solve this problem? Describe what you\'ve done so far.'
     },
     is_solvable_by_traditional_db: {
-        type: Boolean,
+        type: String,
         label: 'Is it possible to solve this problem with a traditional database instead of using a blockchain?',
+        allowedValues: ['Yes', 'No', 'Possibly'],
         autoform: {
-            type: 'boolean-radios',
-            trueLabel: 'Yes',
-            falseLabel: 'No',
-            nullLabel: 'Possibly'
+            type: 'select-radio',
+            options: [
+                {
+                    label: 'Yes',
+                    value: 'Yes'
+                },
+                {
+                    label: 'No',
+                    value: 'No'
+                },
+                {
+                    label: 'Possibly',
+                    value: 'Possibly'
+                }
+            ]
         }
     },
     blockchain_use_reason: {

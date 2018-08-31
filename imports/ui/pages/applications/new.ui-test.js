@@ -54,7 +54,7 @@ describe('New application', function () {
             keys.forEach(j => {
                 // special cases
                 if (j === 'is_solvable_by_traditional_db') {
-                    browser.execute(() => $($('input[name="is_solvable_by_traditional_db"]').get(1)).click())
+                    browser.execute(() => $($('input[name="is_solvable_by_traditional_db"]').get(2)).click()) // test out the 'possibly' option
                 } else if (j === 'team_members') {
                     browser.execute(() => $('input[name="team_members.0.name"]').val('test'))
                     browser.pause(2000)
