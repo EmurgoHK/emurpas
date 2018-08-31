@@ -17,7 +17,7 @@ describe('project questions methods', () => {
             possible_solution: 'Test solution',
             proposed_solution: 'Test solution 2',
             attempted_solution: 'Test solution 3',
-            is_solvable_by_traditional_db: true,
+            is_solvable_by_traditional_db: 'Yes',
             blockchain_use_reason: 'Test reason',
             blockchain_requirement_reason: 'Test reason 2',
             blockchain_solution_proposal: 'Test proposal',
