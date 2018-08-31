@@ -83,8 +83,13 @@ describe('New application', function () {
             browser.pause(3000)
         })
 
-        browser.pause(2000)
+        browser.pause(3000)
         assert(browser.execute(() => FlowRouter.current().route.name === 'App.home').value, true)
+
+        browser.click('.swal-button--confirm')
+        browser.pause(3000)
+
+        assert(browser.execute(() => FlowRouter.current().route.name === 'userInfo').value, true)
     })
 
     it ('should show up on the moderator panel', () => {

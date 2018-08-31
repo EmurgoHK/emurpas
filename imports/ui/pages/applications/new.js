@@ -6,6 +6,7 @@ import { FormProgress } from '/imports/api/form-progress/form-progress'
 import { saveProjectQuestions } from '/imports/api/project-questions/methods'
 // import { AutoForm } from 'meteor/aldeed:autoform'
 import { notify } from '/imports/modules/notifier'
+import swal from 'sweetalert'
 
 const BC_REQUIRE_RSN = 'blockchain_requirement_reason';
 const BC_USE_RSN = 'blockchain_use_reason';
@@ -152,8 +153,23 @@ Template.newApplication.events({
 
 				tpl.wizard.clearData();
 				tpl.wizard.destroy();
-				notify('Application complete', 'success');
-				FlowRouter.go('/');
+				// notify('Application complete', 'success');
+				FlowRouter.go('/')
+				
+				swal({
+		            text: `Application has been received! You will now be directed to answer questions about yourself.`,
+		            icon: 'success',
+		            buttons: {
+		                confirm: {
+		                    text: 'OK',
+		                    value: true,
+		                    visible: true,
+		                    closeModal: true
+		                }
+		            }
+		        }).then(confirmed => {
+		        	FlowRouter.go('/userInfo')
+		        })
 			}
 		})
 		
