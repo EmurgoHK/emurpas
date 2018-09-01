@@ -10,3 +10,14 @@ Template.registerHelper('isTeamMember', () => (((Meteor.users.findOne({
 
 Template.registerHelper('isModerator', () => isModerator(Meteor.userId()))
 
+Template.registerHelper('objToArray',function(obj, toSkip){
+	var result = [];
+	toSkip = toSkip.split(',')
+
+	for (var key in obj) 
+		if (!toSkip.includes(key))
+			result.push({field: key.replace(/_/gi, ' '), value: obj[key]});
+
+    return result;
+});
+
