@@ -1,0 +1,23 @@
+<template name="viewApplication">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                Application ID: <strong>{{projectID}}</strong>
+            </div>
+            <div class="card-body">
+                {{#each objToArray project "Created At,Author,Team members"}}
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <dt>{{field}}</dt>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <dd>{{value}}</dd>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</template>

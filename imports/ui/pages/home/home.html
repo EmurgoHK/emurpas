@@ -11,23 +11,32 @@
                     	<h2>You have been registered as a team member on another application.</h2>
                     	<a class="btn btn-sm btn-primary mb-2" href="/userInfo"  role="button">Fill out user info</a>
                     	{{else}}
-                        {{#if projectquestions.count}}
+                        {{#if formProgress.count}}
                         <table class="table table-responsive-sm table-hover table-outline mb-0">
                             <thead class="thead-light">
                                 <tr>
-                                    <th>Problem Description</th>
-                                    <th>Problem Solution</th>
+                                    <th>Application ID</th>
+                                    <th>Created at</th>
+                                    <th>Updated at</th>
+                                    <th>Status</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {{#each projectquestions}}
+                                {{#each formProgress}}
                                 <tr class="documents-index-item">
-                                    <td scope="row">{{problem_description}}</td>
-                                    <td scope="row">{{proposed_solution}}</td>
+                                    <td scope="row">{{form_type_id}}</td>
+                                    <td scope="row">{{created_at}}</td>
+                                    <td scope="row">{{updated_at}}</td>
                                     <td scope="row">
-                                        {{#if inprogress _id}}
-                                        <a class="btn btn-sm btn-secondary" href="/applications/{{_id}}"  role="button">Resume</a> {{/if}}
+                                        {{#with formatProgressStatus status}}
+                                            <span class="badge badge-pill badge-{{klass}}">{{status}}</span>
+                                        {{/with}}
+                                    </td>
+                                    <td scope="row">
+                                        {{#with formatProgressStatus status form_type_id}}
+                                            <a class="btn btn-sm btn-{{klass}}" href="/applications/{{id}}/{{path}}"  role="button">{{text}}</a> 
+                                        {{/with}}
                                     </td>
                                 </tr>
                                 {{/each}}
