@@ -3,6 +3,8 @@ import './home.html'
 import { ProjectQuestions } from '/imports/api/project-questions/project-questions';
 import { FormProgress } from '/imports/api/form-progress/form-progress'
 
+import moment from 'moment'
+
 Template.App_home.onCreated(function() {
     this.autorun(() => {
         this.subscribe('projectQuestions'),
@@ -51,6 +53,13 @@ Template.App_home.helpers({
         }
 
         return formatted
+    },
+    author: (userId) => {
+        let user = Meteor.users.findOne({ _id: userId })
+        return user.emails[0].address
+    },
+    formatDate: (timestamp) => {
+        return moment(timestamp).format('MMMM Do YYYY, h:mm a')
     }
 
 })
