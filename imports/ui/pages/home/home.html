@@ -16,8 +16,9 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th>Application ID</th>
-                                    <th>Created at</th>
-                                    <th>Updated at</th>
+                                    <th>Author</th>
+                                    <th>Created</th>
+                                    <th>Updated</th>
                                     <th>Status</th>
                                     <th></th>
                                 </tr>
@@ -26,8 +27,9 @@
                                 {{#each formProgress}}
                                 <tr class="documents-index-item">
                                     <td scope="row">{{form_type_id}}</td>
-                                    <td scope="row">{{created_at}}</td>
-                                    <td scope="row">{{updated_at}}</td>
+                                    <td scope="row">{{author user_id}}</td>
+                                    <td scope="row">{{formatDate created_at}}</td>
+                                    <td scope="row">{{formatDate updated_at}}</td>
                                     <td scope="row">
                                         {{#with formatProgressStatus status}}
                                             <span class="badge badge-pill badge-{{klass}}">{{status}}</span>
