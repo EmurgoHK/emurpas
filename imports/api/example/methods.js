@@ -15,7 +15,7 @@ export const newExample = new ValidatedMethod({
     }),
     run({ name, description, tags, accept, numValue, number, radio, author, createdAt }) {
         // execute any arbitary code here
-
+        
     	ExampleCollection.insert({
     		name: name,
             description: description,
