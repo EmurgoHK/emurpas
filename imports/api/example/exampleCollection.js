@@ -39,7 +39,12 @@ ExampleCollection.schema = new SimpleSchema({
     accept: {
         type: Boolean, // boolean type will produce a checkbox on the form
         defaultValue: true,
-        label: 'Do you accept this example?'
+        label: 'Do you accept this example?',
+        custom : function() {
+            if (this.field("accept").value == false) {
+                return "required";
+            }
+        },
     },
     numValue: {
         type: Number, // number type won't allow characters in the input field
@@ -53,12 +58,17 @@ ExampleCollection.schema = new SimpleSchema({
    	},
    	radio: {
       	type: Boolean,
-      	label: 'Do you agree?',
-      	autoform: {
+        label: 'Do you agree?',
+        custom : function() {
+            if (this.field("radio").value == false) {
+                return "required";
+            }
+        },
+        autoform: {
         	type: 'boolean-radios', // using boolean-radios will generate radios instead of checkboxes on the form
          	trueLabel: 'Yes, I agree', // we can use custom labels here also
-         	falseLabel: 'No, I do NOT agree',
-         	value: false // the value that's first selected when the form is rendered
+         	falseLabel: 'No, I do not agree',
+            defaultValue: false, // the value that's first selected when the form is rendered
       	}
    	},
     author: {
