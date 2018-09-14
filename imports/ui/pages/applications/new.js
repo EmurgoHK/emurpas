@@ -123,6 +123,8 @@ Template.newApplication.helpers({
 Template.newApplication.events({
 	'submit' (event, tpl) {
 		event.preventDefault();
+		//only scroll to top if success
+		$(window).scrollTop(0);
 
 		let activeStep = tpl.wizard.activeStep()
 		let projectID = tpl.projectID() === undefined ? 'new' : tpl.projectID()
