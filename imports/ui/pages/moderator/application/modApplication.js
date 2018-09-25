@@ -28,6 +28,13 @@ Template.modApplication.helpers({
         
         return inprogress && inprogress.status == 'in-progress'
     },
+    formProgress: () => FormProgress.find({
+        form_type: 'project'
+    }, {
+        sort: {
+            createdAt: -1
+        }
+    }),
     questions: () => {
         let schema = ProjectQuestions.schema.schema()
         let application = ProjectQuestions.findOne({
