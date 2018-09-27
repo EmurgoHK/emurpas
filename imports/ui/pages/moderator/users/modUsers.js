@@ -12,11 +12,16 @@ Template.modUsers.onCreated(function() {
 })
 
 Template.modUsers.helpers({
-    users: () => Meteor.users.find({}, {
+    users: () => Meteor.users.find({
+        _id : { $ne : Meteor.userId() }
+    }, {
         sort: {
             createdAt: -1
         }
     }),
+    email: function() {
+        return ((this.emails || [])[0] || {}).address
+    },
     username: function() {
         return this.username || ((this.emails || [])[0] || {}).address
     }

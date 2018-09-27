@@ -12,14 +12,24 @@
                         <table class="table table-responsive-sm table-hover table-outline mb-0">
                             <thead class="thead-light">
                                 <tr>
+                                    <th></th>
                                     <th>Username</th>
+                                    <th>Email</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {{#each users}}
                                 <tr class="documents-index-item">
-                                    <td scope="row">{{#if moderator}}<i title="Moderator" style="color: green" class="icon-user-following"></i>{{/if}} {{username}}</td>
+                                    <td>
+                                        {{#if moderator}}
+                                            <i title="Moderator" class="icon-user-following text-success"></i>
+                                        {{else}}
+                                            <i title="Moderator" class="icon-user-unfollow"></i>
+                                        {{/if}}
+                                    </td>
+                                    <td scope="row">{{username}}</td>
+                                    <td scope="row">{{email}}</td>
                                     <td scope="row">
                                         {{#unless moderator}}
                                         <a class="btn btn-sm btn-success js-promote" href="#" role="button">Promote</a>
