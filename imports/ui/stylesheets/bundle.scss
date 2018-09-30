@@ -2,7 +2,7 @@
 -------------------------------------------------- */
 
 // Override Boostrap variables
-@import "{}/node_modules/@coreui/coreui/scss/_bootstrap-variables";
+@import "{}/imports/ui/stylesheets/theme/coreui-variables";
 
 // Bootstrap SASS library
 @import "{}/imports/ui/stylesheets/bootstrap/_bootstrap.scss";
@@ -12,7 +12,7 @@
 @import "{}/imports/ui/stylesheets/theme/noty.scss";
 
 // Import Core UI variables and Mixins
-@import "{}/node_modules/@coreui/coreui/scss/_variables";
+// @import "{}/node_modules/@coreui/coreui/scss/_variables";
 @import "{}/node_modules/@coreui/coreui/scss/_mixins";
 @import "{}/node_modules/@coreui/coreui/scss/mixins/_buttons";
 @import "{}/node_modules/@coreui/coreui/scss/mixins/_list-group";
