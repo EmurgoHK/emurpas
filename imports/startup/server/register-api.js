@@ -14,3 +14,7 @@ import '/imports/api/project-questions/methods'
 
 // userinfo api
 import '/imports/api/userQuestions/methods'
+
+// question ratings
+import '/imports/api/question-rating/methods'
+import '/imports/api/question-rating/server/publications'

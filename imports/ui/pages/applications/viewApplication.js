@@ -1,12 +1,13 @@
 import './viewApplication.html'
 
 import { ProjectQuestions } from '/imports/api/project-questions/project-questions';
-import { FormProgress } from '/imports/api/form-progress/form-progress'
+import { QuestionRating } from '/imports/api/question-rating/question-rating'
 
 Template.viewApplication.onCreated(function() {
     this.autorun(() => {
         this.subscribe('projectQuestions', FlowRouter.getParam("projectID")),
-        this.subscribe('formProgress', FlowRouter.getParam("projectID"))
+        this.subscribe('formProgress', FlowRouter.getParam("projectID")),
+        this.subscribe('questionRating.all')
     })
 })
 
@@ -15,17 +16,30 @@ Template.viewApplication.helpers({
         return FlowRouter.getParam("projectID")
     },
     project () {
-        var project = ProjectQuestions.findOne({ "_id" : FlowRouter.getParam("projectID") })
-        var schema = ProjectQuestions.schema._schema
-        var result = {}
+        let schema = ProjectQuestions.schema
+        let application = ProjectQuestions.findOne({
+            _id: FlowRouter.getParam('projectID')
+        }) || {}
+        let to_exclude = ['Created At', 'Author', 'Team members']
 
-        for (let i = 0; i < ProjectQuestions.schema._firstLevelSchemaKeys.length; i++) {
-            var key = ProjectQuestions.schema._firstLevelSchemaKeys[i]
-            if (project.hasOwnProperty(key)) { 
-                result[schema[key].label] = project[key]
+        return schema.objectKeys().map(key => {
+            const label = schema.label(key)
+
+            if (!to_exclude.includes(label)) {
+                return {
+                    question: {label: label, key: key},
+                    answer: application[key] || '-'
+                }
             }
-        }
-
-        return result
+        }).filter((val) => val)
+    },
+    hasRatings: (ratings) => {
+        if (ratings !== undefined) return true
+    },
+    ratings: function () {
+        return QuestionRating.findOne({
+            applicationId: FlowRouter.getParam('projectID'),
+            questionCode: this.question.key
+        })
     }
 })
