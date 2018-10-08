@@ -5,15 +5,18 @@
                 Application ID: <strong>{{projectID}}</strong>
             </div>
             <div class="card-body">
-                {{#each objToArray project "Created At,Author,Team members"}}
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <dt>{{field}}</dt>
+                {{#each project}}
+                    <div class="card shadow">
+                        <div class="card-header">
+                            {{#if hasRatings ratings}}
+                                <a href="" class="text-warning float-right"><strong><i class="fas fa-star"></i> {{ratings.averageRating}}/10</strong></a>
+                            {{/if}}
+                            <h6><a href="" class="text-dark">{{question.label}}</a></h6>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <dd>{{value}}</dd>
+                        <div class="card-body">
+                            <p class="card-text">
+                                {{answer}}
+                            </p>                            
                         </div>
                     </div>
                 {{/each}}
