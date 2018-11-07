@@ -9,10 +9,27 @@ SimpleSchema.extendOptions(['autoform']);
 
 if (Meteor.isServer) {
     Meteor.publish('projectQuestions', function(projectID) {
+        let user = Meteor.users.findOne({
+            _id: Meteor.userId()
+        }) || {}
+        
         if (projectID) {
-            return ProjectQuestions.find({ '_id': projectID, 'createdBy': this.userId })
+            return ProjectQuestions.find({
+                '_id': projectID,
+                $or: [{
+                    createdBy: Meteor.userId(),
+                }, {
+                    'team_members.email': ((user.emails || [])[0] || {}).address 
+                }]
+            })
         } else {
-            return ProjectQuestions.find({ 'createdBy': this.userId });
+            return ProjectQuestions.find({
+                $or: [{
+                    createdBy: Meteor.userId(),
+                }, {
+                    'team_members.email': ((user.emails || [])[0] || {}).address 
+                }]
+            })
         }
     })
 
