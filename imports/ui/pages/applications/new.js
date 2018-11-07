@@ -178,13 +178,12 @@ Template.newApplication.events({
 	},
 	'change input[type=radio][name=is_solvable_by_traditional_db]' (event, _tpl) {
 		event.preventDefault()
-
 		switch (event.currentTarget.value) {
-			case "true":
+			case "Yes":
 				$('textarea[name=' + BC_USE_RSN + ']').parent().show()
 				$('textarea[name=' + BC_REQUIRE_RSN + ']').parent().hide()
 				break;
-			case "false":
+			case "No":
 				$('textarea[name=' + BC_USE_RSN + ']').parent().hide()
 				$('textarea[name=' + BC_REQUIRE_RSN + ']').parent().show()
 				break;
