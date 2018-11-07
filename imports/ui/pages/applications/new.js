@@ -170,7 +170,7 @@ Template.newApplication.events({
 		                }
 		            }
 		        }).then(confirmed => {
-		        	FlowRouter.go('/userInfo')
+		        	FlowRouter.go('/')
 		        })
 			}
 		})
