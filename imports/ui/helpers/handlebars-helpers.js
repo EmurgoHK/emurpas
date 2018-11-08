@@ -2,11 +2,27 @@ import { Template } from "meteor/templating"
 
 import { isModerator } from '/imports/api/user/methods'
 
+import { UserQuestions } from '/imports/api/userQuestions/userQuestions'
+
 Template.registerHelper('SubsCacheReady', () => Object.keys(SubsCache.cache).map(x => SubsCache.cache[x].ready()).reduce((x1, x2) => x1 && x2, true))
 
-Template.registerHelper('isTeamMember', () => (((Meteor.users.findOne({
-	_id: Meteor.userId()
-}) || {}).profile || {}).team || {}).member)
+Template.registerHelper('isTeamMember', (menu) => {
+	if (!menu) {
+		Meteor.subscribe('userInfo')
+
+		let user = UserQuestions.findOne({
+			createdBy: Meteor.userId()
+		})
+
+		if (user) {
+			return false
+		}
+	}
+
+	return (((Meteor.users.findOne({
+		_id: Meteor.userId()
+	}) || {}).profile || {}).team || {}).member
+})
 
 Template.registerHelper('isModerator', () => isModerator(Meteor.userId()))
 

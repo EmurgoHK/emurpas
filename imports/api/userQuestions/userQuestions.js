@@ -11,6 +11,10 @@ if (Meteor.isServer) {
     Meteor.publish('userQuestions', function (userInfoID) {
         return UserQuestions.find({ '_id' : userInfoID });
     });
+
+    Meteor.publish('userInfo', () => UserQuestions.find({
+        createdBy: Meteor.userId()
+    }))
 }
 
 UserQuestions.schema = new SimpleSchema({
