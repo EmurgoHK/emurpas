@@ -4,6 +4,9 @@ import { isModerator } from '/imports/api/user/methods'
 
 import { UserQuestions } from '/imports/api/userQuestions/userQuestions'
 
+import moment from 'moment'
+import marked from 'marked'
+
 Template.registerHelper('SubsCacheReady', () => Object.keys(SubsCache.cache).map(x => SubsCache.cache[x].ready()).reduce((x1, x2) => x1 && x2, true))
 
 Template.registerHelper('isTeamMember', (menu) => {
@@ -24,6 +27,10 @@ Template.registerHelper('isTeamMember', (menu) => {
 	}) || {}).profile || {}).team || {}).member
 })
 
+Template.registerHelper('md', content => {
+    return  this.innerHTML = marked(content || '')
+})
+
 Template.registerHelper('isModerator', () => isModerator(Meteor.userId()))
 
 Template.registerHelper('objToArray',function(obj, toSkip){
@@ -36,4 +43,12 @@ Template.registerHelper('objToArray',function(obj, toSkip){
 
     return result;
 });
+
+Template.registerHelper('showTimeAgoTimestamp', (date, timezone) => {
+	if (!date) {
+		return ''
+	}
+
+	return moment(date).fromNow()
+})
 

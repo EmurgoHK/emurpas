@@ -11,3 +11,5 @@ import '/imports/modules/autoform-typeahead/autoform-typeahead'
 
 // Blaze helpers
 import "/imports/ui/helpers/handlebars-helpers.js"
+
+import 'bootstrap/dist/js/bootstrap.bundle'
