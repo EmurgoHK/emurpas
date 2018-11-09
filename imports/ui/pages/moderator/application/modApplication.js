@@ -89,6 +89,11 @@ Template.modApplication.helpers({
 
         return true
     },
+    previousRating: (questionRating, rating) => {
+        if (questionRating && questionRating.ratings.some(r => r.userId === Meteor.userId() && r.rating === rating)) {
+            return 'checked'
+        }
+    },
     hasRatings: (ratings) => {
         if (ratings !== undefined) return true
     },
@@ -212,7 +217,20 @@ Template.modApplication.events({
                 notify(err.message, 'error')
                 return
             }
+            
+            if (event.currentTarget.id.includes('edit-')) {
+                $(`#${event.target.id.substring(0, event.target.id.lastIndexOf('-'))}-rating`).addClass('d-none')
+
+            }
             notify('Success', 'success')
         })
+    },
+    'click .js-rate-cancel': function(event, _tpl) {
+        event.preventDefault()
+        $(`#${event.target.id.substring(0, event.target.id.lastIndexOf('-'))}-rating`).addClass('d-none')
+    },
+    'click .js-edit-rating': function(event, _tpl) {
+        // show edit mode
+        $(`#${event.target.id}-rating`).removeClass('d-none')
     }
 })
