@@ -64,7 +64,7 @@ Template.App_home.helpers({
     },
     author: (userId) => {
         let user = Meteor.users.findOne({ _id: userId }) || {}
-        return ((user.emails || [])[0] || {}).address 
+        return user.username ? user.username : ((user.emails || [])[0] || {}).address 
     },
     formatDate: (timestamp) => {
         return moment(timestamp).format('MMMM Do YYYY, h:mm a')

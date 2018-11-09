@@ -13,11 +13,12 @@ Template.signup.events({
 
         let target = event.target
 
-        if (target.email.value !== '' && target.password.value !== '') {
+        if (target.email.value !== '' && target.password.value !== '' && target.username.value !== '') {
             if (target.confirmPassword.value === target.password.value) {
                 Accounts.createUser({
 					email: target.email.value,
-					password: target.password.value
+                    password: target.password.value,
+                    username: target.username.value
 				}, (err) => {
                     if (err) {
                         notify(err.message, 'error')
@@ -35,6 +36,6 @@ Template.signup.events({
             return
         }
 
-        notify('email/password fields are required', 'error')
+        notify('email/username/password fields are required', 'error')
     }
 })

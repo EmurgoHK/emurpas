@@ -26,7 +26,7 @@ Template.commentBody.helpers({
 	fieldId: () => Template.instance().data.fieldId,
 	user: () => Meteor.users.findOne({ _id: Template.currentData().createdBy}),
 	name: function() {
-		return (((this || {}).emails || [])[0] || {}).address || 'Unknown'
+		return this && this.username ? this.username : (((this || {}).emails || [])[0] || {}).address || 'Unknown'
 	},
     canEditComment: function() {
     	return this.createdBy === Meteor.userId()
