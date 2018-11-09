@@ -30,20 +30,48 @@ export const rateQuestion = new ValidatedMethod({
             })
 
             if (questionRating && questionRating !== undefined) {
-                // check if user has already voted, throw if true
-                if (questionRating.ratings.some(r => r.userId === Meteor.userId())) {
-                    throw new Meteor.Error('Error', 'You already rated this response.')
-                }
 
-                // calculate average rating and rating count
-                // add one for the newly added rating
-                let ratingCount = questionRating.ratingCount + 1 
+                
+                let ratingCount = questionRating.ratingCount
 
                 // calculate new average rating by summing all
                 // existing ratings + new rating and divide by new ratingCount
-                let avgRating = ((questionRating.ratings.reduce((acc, curr) => {
-                    return acc + curr.rating
-                }, 0)) + rating)/ratingCount
+                let avgRating = rating
+
+                let previosRating = questionRating.ratings.filter(function(r) { return r.userId === Meteor.userId()});
+                // check if user has already voted
+                // EDIT mode
+                if (previosRating && previosRating.length > 0) {
+                    
+                    // remove previous rating from the set
+                    QuestionRating.update({
+                        _id: questionRating._id
+                    }, {
+                        $pull: {
+                            ratings: {
+                                userId: Meteor.userId()
+                            }
+                        }
+                    })
+
+                    // calculate new average rating by summing all
+                    // existing ratings + new rating - old rating and divide by old ratingCount
+                    avgRating = ((questionRating.ratings.reduce((acc, curr) => {
+                        return acc + curr.rating
+                    }, 0)) + avgRating - previosRating[0].rating)/ratingCount
+
+                } else {
+
+                    // If the user is rating the question for the first time we need to increment the rating count & calculate the average
+                    ratingCount += 1
+
+                    // calculate new average rating by summing all
+                    // existing ratings + new rating and divide by new ratingCount
+                    avgRating = ((questionRating.ratings.reduce((acc, curr) => {
+                        return acc + curr.rating
+                    }, 0)) + avgRating)/ratingCount
+                }
+
 
                 // Add new question rating to set and
                 // update  averageRating and ratingCount

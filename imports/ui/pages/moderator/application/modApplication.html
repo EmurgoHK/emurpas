@@ -43,13 +43,46 @@
                                                         </div>
                                                         <div class="form-group row pt-1">
                                                             <div class="col-md-12">
-                                                                <button class="btn btn-primary btn-sm js-rate-question"><i class="far fa-dot-circle"></i> submit</button>
+                                                                <button class="btn btn-primary btn-sm js-rate-question"><i class="far fa-dot-circle"></i> Submit</button>
                                                             </div>
                                                         </div>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
+                                    {{else}}
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                                <button type="submit" class="btn btn-outline-primary mb-2 js-edit-rating float-right" id="edit-{{question.key}}">Edit Rating</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div id="edit-{{question.key}}-rating" class="d-none bg-light pl-3 pr-3 pt-2 pb-1 rounded edit-rating">
+                                                <form class="form-horizontal">
+                                                    <div class="form-group row mb-0">
+                                                        <label class="col-md-2 col-form-label">
+                                                            <strong>Edit rating for the response</strong>
+                                                        </label>
+                                                        <div class="col-md-10 col-form-label pl-0">
+                                                            {{#each val in ratingValues}}
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" name="{{question.key}}_rating" id="radio_{{question.key}}_{{val}}" value="{{val}}"  {{previousRating ratings val}}>
+                                                                    <label class="form-check-label" >{{val}}</label>
+                                                                </div>
+                                                            {{/each}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row pt-1">
+                                                        <div class="col-md-12">
+                                                            <button class="btn btn-primary btn-sm js-rate-question" id="edit-{{question.key}}-submit"><i class="far fa-dot-circle"></i> Submit</button>
+                                                            <button class="btn btn-primary btn-sm js-rate-cancel" id="edit-{{question.key}}-cancel"><i class="far fa-dot-circle"></i> Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                     {{/if}}
                                 {{/if}}
 
