@@ -156,6 +156,28 @@ Template.modApplication.events({
             }
         })
     },
+    'click .new-comment-moderator': function(event, templateInstance) {
+        event.preventDefault()
+
+        newComment.call({
+            parentId: FlowRouter.getParam('id'),
+            text: $(`#comments-${this.question.key}`).val(),
+            resourceId: FlowRouter.getParam('id'),
+            fieldId: this.question.key,
+            isModeratorOnly: true,
+        }, (err, data) => {
+            $(`#comments-${this.question.key}`).val('')
+            
+            if (!err) {
+                notify('Successfully commented.', 'success')
+
+                templateInstance.message.set(this.question.key, '')
+                templateInstance.show.set(this.question.key, true)
+            } else {
+                templateInstance.message.set(this.question.key, err.reason || err.message)
+            }
+        })
+    },
     'click .comment-new': function(event, templateInstance) {
         event.preventDefault()
 
