@@ -142,7 +142,8 @@ Template.modApplication.events({
             parentId: FlowRouter.getParam('id'),
             text: $(`#comments-${this.question.key}`).val(),
             resourceId: FlowRouter.getParam('id'),
-            fieldId: this.question.key
+            fieldId: this.question.key,
+            type: 'question'
         }, (err, data) => {
             $(`#comments-${this.question.key}`).val('')
             

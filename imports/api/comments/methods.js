@@ -6,6 +6,14 @@ import { Comments } from './comments'
 
 import { isModerator } from '/imports/api/user/methods'
 
+import { notifyApplication } from '/imports/api/project-questions/methods'
+
+const notify = (type, resId, fieldId, text) => {
+    if (type === 'question') {
+        notifyApplication(type, resId, fieldId, text)
+    }
+}
+
 export const newComment = new ValidatedMethod({
     name: 'newComment',
     validate:
@@ -52,6 +60,8 @@ export const newComment = new ValidatedMethod({
                 throw new Meteor.Error('Error.', 'Children of moderator only posts have to be moderator only as well.');
             }
         }
+
+        notify(type, resourceId, fieldId, text)
         
         return Comments.insert({
             parentId: parentId,

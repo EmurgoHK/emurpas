@@ -36,6 +36,8 @@ describe('Sign up page', () => {
 
         browser.setValue('#email', testEmail())
         browser.pause(1000)
+        browser.setValue('#username', 'Test')
+        browser.pause(1000)
         browser.setValue('#password', '1234')
         browser.pause(1000)
         browser.setValue('#confirmPassword', '1234')
