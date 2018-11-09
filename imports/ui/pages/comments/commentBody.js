@@ -60,6 +60,7 @@ Template.commentBody.helpers({
 		}).count();
 	},
 	showReplies: () => Template.instance().showReplies.get(),
+	isModerator: () => Meteor.user().moderator,
 })
 
 Template.commentBody.events({
@@ -82,6 +83,30 @@ Template.commentBody.events({
 		}, (err, data) => {
       		$(`.rep-comment-${this._id}`).val('')
 
+			if (!err) {
+				notify('Successfully commented.', 'success')
+				templateInstance.message.set('')
+
+				templateInstance.replies.set(this._id, false)
+				templateInstance.showReplies.set(true);
+			} else {
+				templateInstance.message.set(err.reason || err.message)
+			}
+		})
+	},
+	'click .reply-comment-moderator': function(event, templateInstance) {
+		event.preventDefault()
+		event.stopImmediatePropagation()
+
+		newComment.call({
+			parentId: this._id,
+			text: $(`.rep-comment-${this._id}`).val(),
+			resourceId: templateInstance.data._id,
+			type: templateInstance.data.type,
+			fieldId: templateInstance.data.fieldId,
+			isModeratorOnly: true,
+		}, (err, data) => {
+      		$(`.rep-comment-${this._id}`).val('')
 			if (!err) {
 				notify('Successfully commented.', 'success')
 				templateInstance.message.set('')

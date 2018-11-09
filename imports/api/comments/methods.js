@@ -30,15 +30,29 @@ export const newComment = new ValidatedMethod({
             type: {
                 type: String,
                 optional: true
+            },
+            isModeratorOnly: {
+                type: Boolean,
+                optional: true,
             }
         }).validator({
             clean: true
         }),
-    run({ parentId, resourceId, fieldId, text, type }) {
+    run({ parentId, resourceId, fieldId, text, type, isModeratorOnly }) {
 		if (!Meteor.userId()) {
 			throw new Meteor.Error('Error.', 'You have to be logged in.')
-		}
+        }
 
+        if (isModeratorOnly) {
+            if (!isModerator(Meteor.userId())) {
+                throw new Meteor.Error('Error.', 'You have to be a moderator to post moderator only comments.');
+            }
+        } else {
+            if (parentId !== resourceId && Comments.findOne({_id: parentId}).isModeratorOnly) {
+                throw new Meteor.Error('Error.', 'Children of moderator only posts have to be moderator only as well.');
+            }
+        }
+        
         return Comments.insert({
             parentId: parentId,
             fieldId: fieldId,
@@ -46,7 +60,8 @@ export const newComment = new ValidatedMethod({
             createdAt: new Date().getTime(),
             createdBy: Meteor.userId(),
             resourceId: resourceId,
-            type: type || 'comment'
+            type: type || 'comment',
+            isModeratorOnly,
         })
     }
 })

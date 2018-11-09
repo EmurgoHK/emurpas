@@ -12,7 +12,10 @@
             </div>
             {{/if}}
                     
-            <h6 class="card-subtitle mb-4">By <strong>{{#with user}}{{#if moderator}} <i class="fas fa-user-cog" title="Moderator"></i> {{/if}}{{name}}{{/with}}</strong> {{showTimeAgoTimestamp createdAt}}</h6>
+            <h6 class="card-subtitle mb-4">
+                By <strong>{{#with user}}{{#if moderator}} <i class="fas fa-user-cog" title="Moderator"></i> {{/if}}{{name}}{{/with}}</strong> {{showTimeAgoTimestamp createdAt}}
+                {{#if isModeratorOnly}}<strong> (Moderator only)</strong> {{/if}}
+            </h6>
             <p class="card-text mb-4"> 
             {{#if editMode}}
             	<textarea class="form-control edit-test edit-comment-{{_id}}">{{text}}</textarea><br />
@@ -38,7 +41,8 @@
                   
                   	<div class="btn-group" role="group">
                     	<div class="btn-group" role="group">
-                      		<button type="submit" class="btn btn-outline-primary mb-2 reply-comment">Comment</button>
+                            {{#if isModerator }} <button type="submit" class="btn btn-outline-primary mb-2 reply-comment-moderator">Comment for moderators</button> {{/if}}
+                      		{{#unless isModeratorOnly }} <button type="submit" class="btn btn-outline-primary mb-2 reply-comment">Comment</button> {{/unless}}
                       		<button type="submit" class="btn btn-outline-danger mb-2 cancel-reply">Cancel</button>
                     	</div>
                   	</div>
