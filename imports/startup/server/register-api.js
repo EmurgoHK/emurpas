@@ -18,3 +18,7 @@ import '/imports/api/userQuestions/methods'
 // question ratings
 import '/imports/api/question-rating/methods'
 import '/imports/api/question-rating/server/publications'
+
+// comments api
+import '/imports/api/comments/methods'
+import '/imports/api/comments/server/publications'

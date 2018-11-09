@@ -16,7 +16,47 @@
                         <div class="card-body">
                             <p class="card-text">
                                 {{answer}}
-                            </p>                            
+                            </p>
+
+                            <div class="float-right">
+                                <a href="#" class="btn btn-outline-primary comment-new">Comment</a>
+                                {{#if commentCount}}<a href="#" class="btn btn-outline-primary comment-show">{{#if showComments}}Hide{{else}}Show{{/if}} comments ({{commentCount}})</a>{{/if}}
+                            </div>
+
+                            {{#if showLine}}<br /><hr>{{/if}}
+
+                            {{#if showReply}}
+                            <div class="row">
+                                <div class="col-sm-12 news-form">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <textarea class="form-control" id="comments-{{question.key}}" name="comment" rows="3" placeholder="Markdown is supported..." required></textarea>
+                                            </div>
+
+                                            <p class="text-danger">{{commentInvalidMessage}}</p>
+
+                                            <div class="btn-group" role="group">
+                                                <div class="btn-group" role="group">
+                                                    <button type="submit" class="btn btn-outline-primary mb-2 new-comment">Comment</button>
+                                                    <button type="submit" class="btn btn-outline-danger mb-2 cancel-new">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/if}}
+
+                            {{#if showComments}}
+                            <div class="row">
+                                <div class="col-sm-12 news-form comments">
+                                {{#each comments}}
+                                    {{> commentBody ident=0 comment=this _id=projectID type=type fieldId=../question.key}}
+                                {{/each}}
+                                </div>
+                            </div>
+                            {{/if}}                          
                         </div>
                     </div>
                 {{/each}}

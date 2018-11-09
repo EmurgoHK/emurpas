@@ -1,0 +1,65 @@
+<template name="commentBody">
+	{{#with comment}}
+	<div style="margin-left: {{ident}}px;" class="card" id="comment-{{_id}}">
+        <div class="card-body">
+            {{#if canEditComment}}
+            <div class="news-settings float-right dropdown" style="margin-top: -10px;">
+                <i class="nav-icon icon-settings dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item edit-mode" href="#"><i class="icon-pencil text-dark"></i> Edit</a>
+                    <a class="dropdown-item text-danger delete-comment" href="#"><i class="icon-trash text-danger"></i> Delete</a>
+                </div>
+            </div>
+            {{/if}}
+                    
+            <h6 class="card-subtitle mb-4">By <strong>{{#with user}}{{#if moderator}} <i class="fas fa-user-cog" title="Moderator"></i> {{/if}}{{name}}{{/with}}</strong> {{showTimeAgoTimestamp createdAt}}</h6>
+            <p class="card-text mb-4"> 
+            {{#if editMode}}
+            	<textarea class="form-control edit-test edit-comment-{{_id}}">{{text}}</textarea><br />
+             	<button class="btn btn-sm btn-outline-primary edit-comment" role="button">Save</button>
+                <button class="btn btn-sm btn-outline-danger cancel-edit" role="button">Cancel</button>
+            {{else}}
+                <span>{{{md text}}}</span> 
+            {{/if}}
+            </p>
+        	<a href="#" class="reply"><i class="fas fa-reply"></i>&nbsp; Reply</a>
+    	</div>
+    </div>
+    {{#if replyMode}}
+    <div style="margin-left: {{formIdent}}px" class="row">
+        <div class="col-sm-12 news-form">
+            <div class="card">
+                <div class="card-body">
+                  	<div class="form-group">
+                    	<textarea class="form-control rep-comment-{{_id}}" name="comment" rows="3" placeholder="Markdown is supported ..." required></textarea>
+                  	</div>
+                  
+                  	<p class="text-danger">{{commentInvalidMessage}}</p>
+                  
+                  	<div class="btn-group" role="group">
+                    	<div class="btn-group" role="group">
+                      		<button type="submit" class="btn btn-outline-primary mb-2 reply-comment">Comment</button>
+                      		<button type="submit" class="btn btn-outline-danger mb-2 cancel-reply">Cancel</button>
+                    	</div>
+                  	</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+    {{#if childCommentCount}}
+        {{#if showReplies}}
+        {{#each childComments}}
+            {{> commentBody ident=newIdent comment=this _id=origId type=type fieldId=fieldId}}
+        {{/each}}
+            <div style="margin-left: {{ident}}px;" class="row mb-4">
+                <button class="btn btn-link btn-primary hideReplies" data-id="{{_id}}">Hide replies</button><br>
+            </div>
+        {{else}}
+            <div style="margin-left: {{ident}}px;" class="row mb-4">
+                <button class="btn btn-link btn-primary showReplies" data-id="{{_id}}">Show replies</button><br>
+            </div>
+        {{/if}}
+    {{/if}}
+    {{/with}}
+</template>

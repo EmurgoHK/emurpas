@@ -1,4 +1,9 @@
 import './modApplication.html'
+import '../../comments/commentBody'
+
+import { Comments } from '/imports/api/comments/comments'
+
+import { newComment } from '/imports/api/comments/methods' 
 
 import { FlowRouter } from 'meteor/kadira:flow-router'
 
@@ -15,14 +20,24 @@ import { notify } from '/imports/modules/notifier'
 const MAX_RATING = 10
 
 Template.modApplication.onCreated(function() {
+    window.testingComments = Comments 
+    
     this.autorun(() => {
         this.subscribe('modProjectQuestions', FlowRouter.getParam('id'))
         this.subscribe('modFormProgress', FlowRouter.getParam('id'))
         this.subscribe('questionRating.all')
+
+        this.subscribe('users')
+        this.subscribe('comments.item', FlowRouter.getParam('id'))
     })
+
+    this.message = new ReactiveDict()
+    this.reply = new ReactiveDict()
+    this.show = new ReactiveDict()
 })
 
 Template.modApplication.helpers({
+    projectID: () => FlowRouter.getParam('id'),
     application: () => ProjectQuestions.findOne({
         _id: FlowRouter.getParam('id')
     }),
@@ -82,11 +97,75 @@ Template.modApplication.helpers({
             applicationId: FlowRouter.getParam('id'),
             questionCode: this.question.key
         })
-    }
-
+    },
+    comments: function() {
+        return Comments.find({
+            parentId: FlowRouter.getParam('id'),
+            fieldId: this.question.key
+        }, {
+            sort: {
+                createdAt: -1
+            }
+        })
+    },
+    commentInvalidMessage: function() {
+        return Template.instance().message.get(this.question.key)
+    },
+    showReply: function() {
+        return Template.instance().reply.get(this.question.key)
+    },
+    showComments: function() {
+        return Template.instance().show.get(this.question.key)
+    },
+    showLine: function() {
+        return Template.instance().reply.get(this.question.key) || Template.instance().show.get(this.question.key)
+    },
+    commentCount: function() {
+        return Comments.find({
+            fieldId: this.question.key,
+            resourceId: FlowRouter.getParam('id')
+        }).count()
+    },
+    type: () => 'question'
 })
 
 Template.modApplication.events({
+    'click .new-comment': function(event, templateInstance) {
+        event.preventDefault()
+
+        newComment.call({
+            parentId: FlowRouter.getParam('id'),
+            text: $(`#comments-${this.question.key}`).val(),
+            resourceId: FlowRouter.getParam('id'),
+            fieldId: this.question.key
+        }, (err, data) => {
+            $(`#comments-${this.question.key}`).val('')
+            
+            if (!err) {
+                notify('Successfully commented.', 'success')
+
+                templateInstance.message.set(this.question.key, '')
+                templateInstance.show.set(this.question.key, true)
+            } else {
+                templateInstance.message.set(this.question.key, err.reason || err.message)
+            }
+        })
+    },
+    'click .comment-new': function(event, templateInstance) {
+        event.preventDefault()
+
+        templateInstance.reply.set(this.question.key, true)
+    },
+    'click .cancel-new': function(event, templateInstance) {
+        event.preventDefault()
+
+        templateInstance.reply.set(this.question.key, false)
+    },
+    'click .comment-show': function(event, templateInstance) {
+        event.preventDefault()
+
+        templateInstance.show.set(this.question.key, !templateInstance.show.get(this.question.key))
+    },
     'click .js-remove': function(event, _templateInstance) {
         swal({
             text: `Are you sure you want to remove this application?`,

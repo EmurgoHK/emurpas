@@ -156,3 +156,25 @@ button {
         }
     }
 }
+
+.news-settings {
+    .dropdown-toggle {
+        cursor: pointer;
+
+        &::after {
+            border: none;
+        }
+    }
+}
+
+// Dropdown link for report option
+.dropdown-link{
+  cursor: pointer;
+}
+.news-settings.dropup{
+  display: flex;
+  justify-content: flex-end;
+}
+.dropdown-menu a {
+  display: block;
+}
