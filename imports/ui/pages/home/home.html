@@ -26,9 +26,9 @@
                             </thead>
                             <tbody>
                                 {{#each projectquestions}}
-                                <tr class="documents-index-item">
+                                <tr class="documents-index-item {{#if isCreatorModerator createdBy}} bg-secondary {{/if}}" >
                                     <td scope="row">{{_id}}</td>
-                                    <td scope="row">{{author createdBy}}</td>
+                                    <td scope="row">{{#if isCreatorModerator createdBy}} <i class="fas fa-user-cog" title="Moderator"></i> {{/if}} {{author createdBy}}</td>
                                     <td scope="row">{{formatDate progress.created_at}}</td>
                                     <td scope="row">{{formatDate progress.updated_at}}</td>
                                     <td scope="row">

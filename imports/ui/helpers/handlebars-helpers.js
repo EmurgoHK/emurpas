@@ -33,6 +33,8 @@ Template.registerHelper('md', content => {
 
 Template.registerHelper('isModerator', () => isModerator(Meteor.userId()))
 
+Template.registerHelper('isCreatorModerator', (id) => isModerator(id))
+
 Template.registerHelper('objToArray',function(obj, toSkip){
 	var result = [];
 	toSkip = toSkip.split(',')
