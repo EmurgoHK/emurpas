@@ -148,6 +148,7 @@ Template.modApplication.events({
             
             if (!err) {
                 notify('Successfully commented.', 'success')
+                templateInstance.reply.set(this.question.key, false);
 
                 templateInstance.message.set(this.question.key, '')
                 templateInstance.show.set(this.question.key, true)
@@ -170,6 +171,7 @@ Template.modApplication.events({
             
             if (!err) {
                 notify('Successfully commented.', 'success')
+                templateInstance.reply.set(this.question.key, false);
 
                 templateInstance.message.set(this.question.key, '')
                 templateInstance.show.set(this.question.key, true)
