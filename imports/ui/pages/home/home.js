@@ -18,22 +18,24 @@ Template.App_home.helpers({
     	let user = Meteor.users.findOne({
     		_id: Meteor.userId()
     	}) || {}
-
-    	return ProjectQuestions.find({
-    		$or: [{
-	        	createdBy: Meteor.userId(),
-	    	}, {
-	    		'team_members.email': ((user.emails || [])[0] || {}).address 
-	    	}]
-	    }, {
-	        sort: {
-	            createdAt: -1
-	        }
-	    }).fetch().map(i => _.extend(i, {
-	    	progress: FormProgress.findOne({
-	    		form_type_id: i._id
-	    	})
-	    }))
+      if(user){
+        return ProjectQuestions.find({
+          $or: [{
+              createdBy: Meteor.userId(),
+          }, {
+            'team_members.email': ((user.emails || [])[0] || {}).address 
+          }]
+        }, {
+            sort: {
+                createdAt: -1
+            }
+        }).fetch().map(i => _.extend(i, {
+          progress: FormProgress.findOne({
+            form_type_id: i._id
+          })
+        }))
+      }
+      return false
     },
     inprogress: (status) => {
     	//Check to see if an application has an in-progress form in progress, if it does return a resume button.
