@@ -22,8 +22,9 @@
             
             <ul class="nav navbar-nav ml-auto mr-4">
                 <li class="nav-item d-md-down-none">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="/notifications">
                         <i class="icon-bell"></i>
+                        {{#if notificationsCount}}<span class="badge badge-pill badge-danger">{{notificationsCount}}</span>{{/if}}
                     </a>
                 </li>
                 

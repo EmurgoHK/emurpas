@@ -22,3 +22,7 @@ import '/imports/api/question-rating/server/publications'
 // comments api
 import '/imports/api/comments/methods'
 import '/imports/api/comments/server/publications'
+
+// notifications api
+import '/imports/api/notifications/methods'
+import '/imports/api/notifications/server/publications'

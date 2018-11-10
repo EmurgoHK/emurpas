@@ -8,7 +8,31 @@ import { FormProgress } from '../form-progress/form-progress'
 
 import { isModerator } from '/imports/api/user/methods'
 
+import { sendNotification } from '/imports/api/notifications/methods'
+
 SimpleSchema.extendOptions(['autoform'])
+
+export const notifyApplication = (type, resId, fieldId, text) => {
+	let application = ProjectQuestions.findOne({
+        _id: resId
+    })
+
+    if (application) {
+    	let users = Meteor.users.find({
+    		'emails.address': {
+    			$in: application.team_members.map(i => i.email)
+    		}
+    	}).fetch()
+
+    	users.push(Meteor.users.findOne({
+    		_id: application.createdBy
+    	}))
+
+    	users.forEach(i => { // notify all users associated with the application
+        	sendNotification(i._id, `New question on your application (${resId}): ${text} (${fieldId})`, 'System', `/applications/${application._id}/view`)
+    	})
+    }
+}
 
 export const saveProjectQuestions = new ValidatedMethod({
     name: 'saveProjectQuestions',
