@@ -17,6 +17,12 @@ describe('New application', function () {
         browser.execute(() => Meteor.loginWithPassword('testing', 'testing'))
 
         browser.pause(10000)
+
+        browser.execute(() => {
+            Meteor.call('generateTestModerator', (err, data) => {})
+        })
+
+        browser.pause(2000)
     })
 
     it('it should render correctly', () => {
@@ -175,6 +181,41 @@ describe('New application', function () {
         let countN = browser.execute(() => $('.comments').find('.card').length).value
 
         assert(count === countN + 1, true)
+    })
+
+    it ('moderator can delegate a question to another moderator', () => {
+        browser.click('.js-delegate')
+        browser.pause(2000)
+
+        assert(browser.isExisting('.js-delegate-question'))
+        assert(browser.isVisible('.js-delegate-question'))
+
+        browser.click('.js-delegate-question')
+        browser.pause(2000)
+
+        assert(browser.isExisting('.js-revoke'))
+        assert(browser.isVisible('.js-revoke'))
+    })
+
+    it ('moderator can revoke question delegation', () => {
+        browser.click('.js-revoke')
+        browser.pause(2000)
+
+        assert(browser.isExisting('.js-delegate'))
+        assert(browser.isVisible('.js-delegate'))
+    })
+
+    it ('moderator can vote on answers', () => {
+        browser.click('#radio_problem_description_8')
+        browser.pause(2000)
+
+        browser.click('.js-rate-question')
+        browser.pause(2000)
+
+        assert(browser.isExisting('.fa-star'))
+        assert(browser.isVisible('.fa-star'))
+
+        assert(browser.execute(() => $('.text-warning strong').text().trim() === '8/10').value)
     })
 
     it ('moderator can remove an application', () => {
