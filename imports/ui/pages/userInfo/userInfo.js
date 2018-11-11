@@ -10,7 +10,7 @@ import { notify } from '/imports/modules/notifier'
 
 Template.userInfo.onCreated(function() {
 	window.UserQuestions = UserQuestions
-	this.userInfoID = FlowRouter.getParam("userInfoID")
+	this.userInfoID = () => FlowRouter.getParam("userInfoID")
 
 	this.autorun(() => {
 		this.subscribe('userQuestions', FlowRouter.getParam("userInfoID"))
@@ -91,7 +91,7 @@ Template.userInfo.events({
 		event.preventDefault();
 
 		let activeStep = tpl.wizard.activeStep()
-		let userInfoID = tpl.userInfoID === undefined ? 'new' : tpl.userInfoID
+		let userInfoID = tpl.userInfoID() === undefined ? 'new' : tpl.userInfoID()
 
 		let steps = {}
 		let lastStep = activeStep.wizard._stepsByIndex[activeStep.wizard.indexOf(activeStep.id)-1]
