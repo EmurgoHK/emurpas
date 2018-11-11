@@ -26,3 +26,7 @@ import '/imports/api/comments/server/publications'
 // notifications api
 import '/imports/api/notifications/methods'
 import '/imports/api/notifications/server/publications'
+
+// delegates api
+import '/imports/api/delegates/methods'
+import '/imports/api/delegates/server/publications'

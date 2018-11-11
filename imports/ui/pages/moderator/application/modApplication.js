@@ -10,9 +10,11 @@ import { FlowRouter } from 'meteor/kadira:flow-router'
 import { ProjectQuestions } from '/imports/api/project-questions/project-questions'
 import { FormProgress } from '/imports/api/form-progress/form-progress'
 import { QuestionRating } from '/imports/api/question-rating/question-rating'
+import { Delegates } from '/imports/api/delegates/delegates'
 
 import { removeProjectQuestions } from '/imports/api/project-questions/methods'
 import { rateQuestion } from '/imports/api/question-rating/methods'
+import { delegateQuestion, revokeDelegation } from '/imports/api/delegates/methods'
 
 import swal from 'sweetalert'
 import { notify } from '/imports/modules/notifier'
@@ -29,11 +31,14 @@ Template.modApplication.onCreated(function() {
 
         this.subscribe('users')
         this.subscribe('comments.item', FlowRouter.getParam('id'))
+
+        this.subscribe('delegates')
     })
 
     this.message = new ReactiveDict()
     this.reply = new ReactiveDict()
     this.show = new ReactiveDict()
+    this.delegates = new ReactiveDict()
 })
 
 Template.modApplication.helpers({
@@ -66,9 +71,29 @@ Template.modApplication.helpers({
             const label = schema.label(key)
 
             if (!to_exclude.includes(label)) {
+                let delegates = Delegates.findOne({
+                    questionId: key,
+                    createdBy: Meteor.userId()
+                }) || {}
+
+                let delegatedFrom = Delegates.find({
+                    questionId: key,
+                    delegateTo: Meteor.userId()
+                }).fetch()
+
+                delegatedFrom = delegatedFrom.map(i => Meteor.users.findOne({
+                    _id: i.createdBy
+                }))
+
+                delegates.user = Meteor.users.findOne({
+                    _id: delegates.delegateTo
+                })
+
                 return {
                     question: {label: label, key: key},
-                    answer: application[key] || '-'
+                    answer: application[key] || '-',
+                    delegates: delegates,
+                    delegatedFrom: delegatedFrom
                 }
             }
         }).filter((val) => val)
@@ -131,10 +156,46 @@ Template.modApplication.helpers({
             resourceId: FlowRouter.getParam('id')
         }).count()
     },
-    type: () => 'question'
+    type: () => 'question',
+    isDelegated: function() {
+        let delegates = Delegates.findOne({
+            createdBy: Meteor.userId(),
+            questionId: this.question.key
+        })
+
+        return delegates && (~delegates.scope.indexOf('all') || ~delegates.scope.indexOf(FlowRouter.getParam('id'))) && (!~(delegates.except || []).indexOf(FlowRouter.getParam('id')))
+    },
+    delegateIntent: function() {
+        return Template.instance().delegates.get(this.question.key)
+    },
+    moderators: () => Meteor.users.find({
+        _id: {
+            $ne: Meteor.userId()
+        },
+        moderator: true
+    }),
+    username: function(context) {
+        context = context || this
+
+        return context.profile && context.profile.username || (context.emails && context.emails[0] && context.emails[0].address)
+    }
 })
 
 Template.modApplication.events({
+    'click .js-revoke': function(event, templateInstance) {
+        event.preventDefault()
+
+        revokeDelegation.call({
+            questionId: this.question.key,
+            except: [$(event.currentTarget).data('scope')]
+        }, (err, data) => {
+            if (!err) {
+                notify('Successfully revoked.')
+            } else {
+                notify('Error while revoking delegation.', 'error')
+            }
+        })
+    },
     'click .new-comment': function(event, templateInstance) {
         event.preventDefault()
 
@@ -257,5 +318,33 @@ Template.modApplication.events({
     'click .js-edit-rating': function(event, _tpl) {
         // show edit mode
         $(`#${event.target.id}-rating`).removeClass('d-none')
+    },
+    'click .js-delegate': function(event, templateInstance) {
+        event.preventDefault()
+
+        templateInstance.delegates.set(this.question.key, !templateInstance.delegates.get(this.question.key))
+
+        if (templateInstance.delegates.get(this.question.key)) {
+            Meteor.setTimeout(() => $(`.js-user-choice-${this.question.key}`).select2(), 500)
+        } else {
+            $('.select2').remove()
+        }
+    },
+    'click .js-delegate-question': (event, templateInstance) => {
+        event.preventDefault()
+
+        delegateQuestion.call({
+            questionId: $(event.currentTarget).data('question'),
+            scope: [$(event.currentTarget).data('scope')],
+            delegateTo: $(`.js-user-choice-${$(event.currentTarget).data('question')}`).val()
+        }, (err, data) => {
+            if (!err) {
+                notify('Successfully delegated.')
+
+                templateInstance.delegates.set($(event.currentTarget).data('question'), false)
+            } else {
+                notify('Error while delegating question.', 'error')
+            }
+        })
     }
 })

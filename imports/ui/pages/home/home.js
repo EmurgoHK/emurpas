@@ -17,7 +17,7 @@ Template.App_home.helpers({
     projectquestions: () => {
     	let user = Meteor.users.findOne({
     		_id: Meteor.userId()
-    	}) || {}
+    	})
       if(user){
         return ProjectQuestions.find({
           $or: [{
