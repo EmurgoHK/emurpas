@@ -76,6 +76,30 @@ if (Meteor.isDevelopment) {
                     }
                 })
             }
+        },
+        generateTestModerator: () => {
+            let user = Meteor.users.findOne({
+                username: 'mod'
+            })
+
+            if (!user) {
+                let uId = Accounts.createUser({
+                    username: 'mod',
+                    password: 'mod',
+                    email: 'mod@mod.test',
+                    profile: {
+                        name: 'Moderator'
+                    }
+                })
+
+                Meteor.users.update({
+                    _id: uId
+                }, {
+                    $set: {
+                        moderator: true
+                    }
+                })
+            }
         }
     })
 }
