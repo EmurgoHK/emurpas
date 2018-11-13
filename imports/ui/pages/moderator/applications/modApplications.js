@@ -10,35 +10,36 @@ import moment from 'moment'
 import { notify } from '/imports/modules/notifier'
 
 Template.modApplications.onCreated(function() {
-    this.autorun(() => {
-        this.subscribe('modProjectQuestions')
-        this.subscribe('modFormProgress')
-    })
+  this.autorun(() => {
+    this.subscribe('modProjectQuestions')
+    this.subscribe('modFormProgress')
+    this.subscribe('users')
+  })
 })
 
 Template.modApplications.helpers({
     applications: () => ProjectQuestions.find({}, {
-        sort: {
-            createdAt: -1
-        }
+      sort: {
+        createdAt: -1
+      }
     }),
     isInProgress: function(status) {
-        return status == 'in-progress'
+      return status == 'in-progress'
     },
     formProgress: function () {
-        var progress = FormProgress.find({
-            form_type: 'project'
-        }, {
-            sort: {
-                createdAt: -1
-            }
-        })
-
-        return progress
+      var progress = FormProgress.find({
+        form_type: 'project'
+      }, {
+        sort: {
+          createdAt: -1
+        }
+      })
+      
+      return progress
     },
     author: (userId) => {
-        let user = Meteor.users.findOne({ _id: userId })
-        return user.emails[0].address
+      let user = Meteor.users.findOne({ _id: userId })
+      return user.emails[0].address
     },
     formatDate: (timestamp) => {
         return moment(timestamp).format('MMMM Do YYYY, h:mm a')
