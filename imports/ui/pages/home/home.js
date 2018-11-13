@@ -11,7 +11,7 @@ Template.App_home.onCreated(function() {
     this.subscribe('formProgress')
     this.subscribe('users')
 
-    if(Meteor.user().moderator){
+    if(Meteor.user() && Meteor.user().moderator){
       FlowRouter.go('/moderator/applications')
     }
   })
