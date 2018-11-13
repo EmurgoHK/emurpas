@@ -2,6 +2,7 @@ import './userInfo.html'
 
 import { Template } from 'meteor/templating'
 import { UserQuestions } from '/imports/api/userQuestions/userQuestions'
+import { ProjectQuestions } from '/imports/api/project-questions/project-questions'
 import { FormProgress } from '/imports/api/form-progress/form-progress'
 import { addUserInfo } from '/imports/api/userQuestions/methods'
 
@@ -13,9 +14,11 @@ Template.userInfo.onCreated(function() {
 	this.userInfoID = () => FlowRouter.getParam("userInfoID")
 
 	this.autorun(() => {
-		this.subscribe('userQuestions', FlowRouter.getParam("userInfoID"))
+		this.subscribe('userInfo')
 		this.subscribe('formProgress', FlowRouter.getParam("userInfoID"))
 	})
+
+	this.autorun(() => this.subscribe('projectQuestions'))
 })
 
 Template.userInfo.onRendered(function() {
@@ -45,11 +48,38 @@ Template.userInfo.onRendered(function() {
 
 			wizard.show(progress.next_step)
 		}
-		
+	})
+
+	this.autorun(() => {
+		let uq = UserQuestions.findOne({
+			createdBy: Meteor.userId(),
+			employmentStatus: {
+				$exists: true
+			}
+		})
+
+		if (uq && !FlowRouter.getParam('userInfoID')) {
+			FlowRouter.redirect(`/userInfo/${uq._id}/view`) // don't allow multiple user infos
+		}
 	})
 })
 
 Template.userInfo.helpers({
+	hasApplication: () => {
+		let user = Meteor.users.findOne({
+            _id: Meteor.userId()
+        })
+
+        if (user) {
+			return ProjectQuestions.find({
+	            $or: [{
+	                createdBy: Meteor.userId(),
+	            }, {
+	               'team_members.email': ((user.emails || [])[0] || {}).address 
+	            }]
+	        }).count()
+		}
+	},
 	steps() {
 		return [{
 			id: 'stepOne',

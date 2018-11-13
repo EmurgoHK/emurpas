@@ -20,7 +20,7 @@ describe('Header when user isn\'t logged in', () => {
     })
 
     it('should hide sidebar when nav-bar toggler is clicked', () => {
-        browser.click('button.d-md-down-none')
+        browser.click('.navbar-toggler.d-lg-block')
         browser.pause(2000)
         assert(browser.isExisting('.sidebar'), false)
         assert(browser.isVisible('.sidebar'), false)
@@ -43,12 +43,14 @@ describe('Header when user is logged in', () => {
         browser.pause(5000)
     })
     
-    it ('should have a sign in link', () => {
+    it ('should have a sign out link', () => {
         assert(browser.isExisting('#signOut'), true)
-        assert(browser.isVisible('#signOut'), true)
     })
 
     it ('should sign out user when signOut is clicked', () => {
+        browser.click('.dropdown-toggle')
+        browser.pause(2000)
+
         browser.click('#signOut')
         browser.pause(3000)
 
@@ -57,7 +59,7 @@ describe('Header when user is logged in', () => {
     })
 
     it('should hide sidebar when nav-bar toggler is clicked', () => {
-        browser.click('button.d-md-down-none')
+        browser.click('.navbar-toggler.d-lg-block')
         browser.pause(3000)
         
         assert(browser.isExisting('.sidebar'), false)

@@ -56,6 +56,39 @@
                         </div>
                         {{/unless}}
                         {{/if}}
+                        {{#if userInfo}}
+                        <br />
+                    	<table class="table table-responsive-sm table-hover table-outline mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Info ID</th>
+                                    <th>Created</th>
+                                    <th>Updated</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#with userInfo}}
+                                <tr class="documents-index-item" >
+                                    <td scope="row">{{_id}}</td>
+                                    <td scope="row">{{formatDate createdAt}}</td>
+                                    <td scope="row">{{formatDate updatedAt}}</td>
+                                    <td scope="row">
+                                        {{#with formatProgressStatus progress.status}}
+                                            <span class="badge badge-pill badge-{{klass}}">{{status}}</span>
+                                        {{/with}}
+                                    </td>
+                                    <td scope="row">
+                                        {{#with formatProgressStatus progress.status _id createdBy}}
+                                            <a class="btn btn-sm btn-{{klass}}" href="/userInfo/{{id}}/{{path}}"  role="button">{{text}}</a>
+                                        {{/with}}
+                                    </td>
+                                </tr>
+                                {{/with}}
+                            </tbody>
+                        </table>
+                    	{{/if}}
                     </div>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 import { Mongo } from 'meteor/mongo'
 import { isModerator } from '/imports/api/user/methods'
 import { ProjectQuestions } from '/imports/api/project-questions/project-questions'
+import { UserQuestions } from '/imports/api/userQuestions/userQuestions'
 
 export const FormProgress = new Mongo.Collection('formProgress')
 
@@ -21,10 +22,14 @@ if (Meteor.isServer) {
 	                'team_members.email': ((user.emails || [])[0] || {}).address 
 	            }]
 	    	}).fetch()
+
+	    	let info = UserQuestions.find({
+	    		createdBy: Meteor.userId()
+	    	}).fetch()
 	    	
             return FormProgress.find({
             	form_type_id: {
-            		$in: questions.map(i => i._id)
+            		$in: _.union(questions.map(i => i._id), info.map(i => i._id))
             	}
             })
         }
