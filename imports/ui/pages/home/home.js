@@ -1,16 +1,20 @@
 import './home.html'
-
+import { FlowRouter } from 'meteor/kadira:flow-router'
 import { ProjectQuestions } from '/imports/api/project-questions/project-questions';
 import { FormProgress } from '/imports/api/form-progress/form-progress'
 
 import moment from 'moment'
 
 Template.App_home.onCreated(function() {
-    this.autorun(() => {
-        this.subscribe('projectQuestions'),
-        this.subscribe('formProgress')
-        this.subscribe('users')
-    })
+  this.autorun(() => {
+    this.subscribe('projectQuestions'),
+    this.subscribe('formProgress')
+    this.subscribe('users')
+
+    if(Meteor.user().moderator){
+      FlowRouter.go('/moderator/applications')
+    }
+  })
 })
 
 Template.App_home.helpers({
