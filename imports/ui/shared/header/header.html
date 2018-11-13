@@ -27,11 +27,19 @@
           {{#if notificationsCount}}<span class="badge badge-pill badge-danger">{{notificationsCount}}</span>{{/if}}
         </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#" id="signOut">
-          Sign out
-        </a>
-      </li>
+      <a class="nav-link dropdown-toggle" href="#" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true">
+        {{currentUser.username}}
+      </a>
+      <!-- TODO : For Smaller Screen, use this later if more setting options are added -->
+      <!-- <a class="nav-link dropdown-toggle d-block d-sm-none" data-toggle="dropdown" aria-expanded="false">
+        <i class="icon-user"></i>
+      </a> -->
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
+        <div class="dropdown-header text-center">
+          <strong>Account</strong>
+        </div>
+        <a class="dropdown-item" id="signOut" style="cursor: pointer;"><i class="nav-icon icon-logout"></i> Sign out</a>
+      </div>
       {{ else }}
       <li class="nav-item">
         <a class="nav-link" href="/login">
