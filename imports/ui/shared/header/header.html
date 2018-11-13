@@ -14,9 +14,15 @@
     </button>
 
     <ul class="nav navbar-nav d-none d-lg-block">
-      <li class="nav-item px-3">
-        <a class="nav-link" href="/">Dashboard</a>
-      </li>
+      {{#if isModerator}}
+        <li class="nav-item px-3">
+          <a class="nav-link" href="/moderator/applications">Applications</a>
+        </li>
+      {{else}}
+        <li class="nav-item px-3">
+          <a class="nav-link" href="/">Dashboard</a>
+        </li>
+      {{/if}}
     </ul>
 
     <ul class="nav navbar-nav ml-auto mr-4">
