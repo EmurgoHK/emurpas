@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor'
 import { Comments } from '../comments'
 
 Meteor.publish('comments.item', (resId) => {
+	if (!Meteor.userId()) return;
 	return Comments.find({
 		$and: [{
 			$or: [ // It must match the requested item

@@ -11,9 +11,11 @@ if (Meteor.isServer) {
         if (formTypeID) {
             return FormProgress.find({ 'form_type_id': formTypeID });
         } else {
-        	let user = Meteor.users.findOne({
+            if (!Meteor.userId()) return;
+
+            let user = Meteor.users.findOne({
 	            _id: Meteor.userId()
-	        }) || {}
+	        }) || {};
 
 	    	let questions = ProjectQuestions.find({
 	    		$or: [{

@@ -9,6 +9,8 @@ SimpleSchema.extendOptions(['autoform']);
 
 if (Meteor.isServer) {
     Meteor.publish('projectQuestions', function(projectID) {
+        if (!Meteor.userId()) return;
+        
         let user = Meteor.users.findOne({
             _id: Meteor.userId()
         })
