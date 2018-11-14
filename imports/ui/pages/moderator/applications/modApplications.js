@@ -10,36 +10,70 @@ import moment from 'moment'
 import { notify } from '/imports/modules/notifier'
 
 Template.modApplications.onCreated(function() {
-  this.autorun(() => {
-    this.subscribe('modProjectQuestions')
-    this.subscribe('modFormProgress')
-    this.subscribe('users')
-  })
+    this.autorun(() => {
+        this.subscribe('modProjectQuestions')
+        this.subscribe('modFormProgress')
+        this.subscribe('users')
+    })
+
+    this.search = new ReactiveVar('')
 })
 
 Template.modApplications.helpers({
-    applications: () => ProjectQuestions.find({}, {
-      sort: {
-        createdAt: -1
-      }
-    }),
     isInProgress: function(status) {
-      return status == 'in-progress'
+        return status == 'in-progress'
     },
     formProgress: function () {
-      var progress = FormProgress.find({
-        form_type: 'project'
-      }, {
-        sort: {
-          createdAt: -1
+        let search = Template.instance().search.get()
+        let pq = []
+
+        if (!search) {
+            pq = ProjectQuestions.find({}, {
+                sort: {
+                    createdAt: -1
+                }
+            }).fetch().map(i => i._id)
+        } else {
+            let posAuthors = Meteor.users.find({
+                $or: [
+                {'username': new RegExp(search, 'ig')},
+                {'emails.address': new RegExp(search, 'ig')}
+                ]
+            }).fetch().map(i => i._id)
+
+            pq = ProjectQuestions.find({
+                $or: [
+                {status: new RegExp(search, 'ig')},
+                {'team_members.name': new RegExp(search, 'ig')},
+                {'team_members.email': new RegExp(search, 'ig')},
+                {problem_description: new RegExp(search, 'ig')},
+                {createdBy: {
+                    $in: posAuthors
+                }}
+                ]
+            }, {
+                sort: {
+                    createdAt: -1
+                }
+            }).fetch().map(i => i._id)
         }
-      })
-      
-      return progress
+
+        var progress = FormProgress.find({
+            form_type: 'project',
+            form_type_id: {
+                $in: pq
+            }
+        }, {
+            sort: {
+                createdAt: -1
+            }
+        })
+
+        return progress
     },
     author: (userId) => {
-      let user = Meteor.users.findOne({ _id: userId })
-      return user.emails[0].address
+        let user = Meteor.users.findOne({ _id: userId }) || {}
+        return ((user.emails || [])[0] || {}).address
     },
     formatDate: (timestamp) => {
         return moment(timestamp).format('MMMM Do YYYY, h:mm a')
@@ -67,6 +101,7 @@ Template.modApplications.helpers({
 })
 
 Template.modApplications.events({
+    'keyup .search': (event, templateInstance) => templateInstance.search.set($(event.currentTarget).val()),
     'click .js-remove': function(event, templateInstance) {
         swal({
             text: `Are you sure you want to remove this application?`,
