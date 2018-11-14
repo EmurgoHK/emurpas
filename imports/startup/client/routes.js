@@ -6,6 +6,7 @@ import { notify } from "/imports/modules/notifier"
 import '/imports/ui/pages/home/home'
 import '/imports/ui/pages/notifications/notifications'
 import '/imports/ui/pages/userInfo/userInfo'
+import '/imports/ui/pages/userInfo/viewUserInfo'
 import '/imports/ui/pages/applications/new'
 import '/imports/ui/pages/applications/viewApplication'
 import '/imports/ui/pages/login/login'
@@ -89,6 +90,17 @@ FlowRouter.route('/applications/:projectID/view', {
 		  header: 'header',
 		  sidebar: 'sidebar',
 		  main: 'viewApplication'
+	  })
+	}
+})
+
+FlowRouter.route('/userInfo/:id/view', {
+	name: 'viewUserInfo',
+	action: () => {
+	  BlazeLayout.render('App_body', {
+		  header: 'header',
+		  sidebar: 'sidebar',
+		  main: 'viewUserInfo'
 	  })
 	}
 })

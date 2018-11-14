@@ -2,22 +2,46 @@ import './home.html'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { ProjectQuestions } from '/imports/api/project-questions/project-questions';
 import { FormProgress } from '/imports/api/form-progress/form-progress'
+import { UserQuestions } from '/imports/api/userQuestions/userQuestions'
 
 import moment from 'moment'
 
 Template.App_home.onCreated(function() {
-  this.autorun(() => {
-    this.subscribe('projectQuestions'),
-    this.subscribe('formProgress')
-    this.subscribe('users')
+  	this.autorun(() => {
+    	this.subscribe('projectQuestions')
+    	this.subscribe('formProgress')
+    	this.subscribe('users')
+    	this.subscribe('userInfo')
 
-    if(Meteor.user() && Meteor.user().moderator){
-      FlowRouter.go('/moderator/applications')
-    }
-  })
+    	if (Meteor.user() && Meteor.user().moderator){
+      		FlowRouter.go('/moderator/applications')
+    	}
+  	})
 })
 
 Template.App_home.helpers({
+	userInfo: () => {
+		let user = Meteor.users.findOne({
+    		_id: Meteor.userId()
+    	})
+
+    	if (user) {
+    		let uq = UserQuestions.findOne({
+    			createdBy: Meteor.userId()
+    		})
+
+    		if (uq) {
+	    		return _.extend(uq, {
+	          		progress: FormProgress.findOne({
+	            		form_type_id: uq._id
+	          		})
+	          	})
+    		}
+    	}
+	},
+	updatedAt: function() {
+		return this.updatedAt || this.progress.updated_at
+	},
     projectquestions: () => {
     	let user = Meteor.users.findOne({
     		_id: Meteor.userId()

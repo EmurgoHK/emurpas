@@ -1,0 +1,31 @@
+<template name="viewUserInfo">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                User Info ID: <strong>{{uId}}</strong>
+            </div>
+            <div class="card-body">
+                {{#each info}}
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <h6><span class="text-dark">{{question.label}}</span>&nbsp;<a href="#" title="Edit field" class="edit"><i class="fas fa-pencil-alt"></i></a></h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text viewUserInfo">
+                                {{#if editMode}}
+                                {{#autoForm doc=uq type='method-update' meteormethod='updateUserInfo' collection='UserQuestions' id=question.key}}
+                                    {{> afQuickField name=question.key}}
+                                {{/autoForm}}
+                                <button class="btn btn-success btn-sm js-save"><i class="fas fa-check"></i> Save</button>
+                                <button class="btn btn-danger btn-sm js-cancel"><i class="fas fa-times"></i> Cancel</button>
+                                {{else}}
+                                    {{answer}}
+                                {{/if}}
+                            </p>        
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</template>

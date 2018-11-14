@@ -43,6 +43,25 @@ describe('user questions methods', () => {
         })
     })
 
+    it ('user can update data', () => {
+        let uq = UserQuestions.findOne({})
+
+        return callWithPromise('updateUserInfo', {
+            _id: uq._id,
+            modifier: {
+                $set: {
+                    fullName: 'Testing'
+                }
+            }
+        }).then(data => {
+            let uq2 = UserQuestions.findOne({
+                _id: uq._id
+            })
+
+            assert.ok(uq2.fullName === 'Testing')
+        })
+    })
+
     after(() => {
         UserQuestions.remove({})
     })

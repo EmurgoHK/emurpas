@@ -126,6 +126,14 @@ UserQuestions.schema = new SimpleSchema({
         autoform: {
             type: 'hidden'
         }
+    },
+    updatedAt: {
+        type: Number,
+        label: 'Updated At',
+        autoValue: () => new Date().getTime(),
+        autoform: {
+            type: 'hidden'
+        }
     }
 }, {
     tracker: Tracker
