@@ -272,29 +272,6 @@ describe('New application', function () {
         assert(browser.isVisible('.js-delegate'))
     })
 
-    it ('moderator can vote on answers', () => {
-        browser.click('#radio_problem_description_8')
-        browser.pause(2000)
-
-        browser.click('.js-rate-question')
-        browser.pause(2000)
-
-        assert(browser.isExisting('.fa-star'))
-        assert(browser.isVisible('.fa-star'))
-
-        assert(browser.execute(() => $('.text-warning strong').text().trim() === '8/10').value)
-    })
-
-    it ('moderator can remove an application', () => {
-        browser.click('.js-remove')
-        browser.pause(3000)
-
-        browser.click('.swal-button--confirm')
-        browser.pause(3000)
-
-        assert(browser.execute(() => FlowRouter.current().route.name === 'modApplications'), true)
-    })
-
     after(() => {
         browser.pause(3000)
 

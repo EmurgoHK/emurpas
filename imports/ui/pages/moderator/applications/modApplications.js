@@ -71,6 +71,11 @@ Template.modApplications.helpers({
 
         return progress
     },
+    eloRanking: function() {
+        return (ProjectQuestions.findOne({
+            _id: this.form_type_id
+        }) || {}).eloRanking || '-'
+    },
     author: (userId) => {
         let user = Meteor.users.findOne({ _id: userId }) || {}
         return ((user.emails || [])[0] || {}).address

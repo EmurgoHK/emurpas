@@ -34,3 +34,4 @@ arillo:flow-router-helpers
 forwarder:autoform-wizard
 blockrazor:subscache-c4
 reactive-dict
+littledata:synced-cron
