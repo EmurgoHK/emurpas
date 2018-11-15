@@ -1,4 +1,6 @@
 import './new.html'
+import './new.scss'
+
 import { Template } from "meteor/templating"
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { ProjectQuestions } from '/imports/api/project-questions/project-questions'
@@ -43,7 +45,6 @@ Template.newApplication.onRendered(function() {
 			
 			for (let i = 0; i < wizard.steps.length; i++) {
 				const step = wizard.steps[i];
-				if (step.id === progress.next_step) break;
 
 				const stepData = {}
 				const schemaKeys = step.schema._schemaKeys
@@ -121,60 +122,95 @@ Template.newApplication.helpers({
 
 
 Template.newApplication.events({
+	'change form' (event, tpl) {
+		event.preventDefault();
+		const formGroup = $(event.target).closest('.form-group');
+
+		formGroup.removeClass('autosave-saved');
+		formGroup.removeClass('autosave-failed');
+		formGroup.addClass('autosave-changed');
+
+		// Get the id of the changed form and field
+		const formId = event.target.form.id;
+		const targetKey = formGroup.find('[data-schema-key]').data('schema-key');
+		
+		// If the field isn't valid by itself it shouldn't be updated (this doesn't check required, that is only check on clicking next)
+		if (!AutoForm.validateField(targetKey, formId))
+			return;
+
+		// Get the value of the field through AutoForm
+		const value = AutoForm.getFieldValue(targetKey, formId) || null;
+		
+		const projectID = tpl.projectID() === undefined ? 'new' : tpl.projectID()
+
+		// Construct progress info
+		const wizard = Wizard.get('basic-wizard');
+		const activeStep = wizard.activeStep();
+		let steps = {
+			last: wizard.getStep(wizard.indexOf(activeStep.id)-1).id,
+			next: activeStep.id,
+			final: false,
+		};
+
+		saveProjectQuestions.call({ projectID: projectID, data: {[targetKey]: value}, steps: steps}, (err, resp) => {
+			formGroup.removeClass('autosave-changed');
+			if (!err) {
+				if (projectID !== resp) FlowRouter.setParams({projectID: resp});
+				formGroup.addClass('autosave-saved');
+			} else {
+				formGroup.addClass('autosave-failed');
+				AutoForm.getValidationContext(formId).addValidationErrors([err])
+			}
+		});	
+	},
+
 	'submit' (event, tpl) {
 		event.preventDefault();
-		//only scroll to top if success
-		$(window).scrollTop(0);
+		const formGroup = $(event.target).closest('.form-group');
 
-		let activeStep = tpl.wizard.activeStep()
-		let projectID = tpl.projectID() === undefined ? 'new' : tpl.projectID()
+		formGroup.removeClass('autosave-saved');
+		formGroup.removeClass('autosave-failed');
+		formGroup.addClass('autosave-changed');
 
-		let steps = {}
-		let nextStep = activeStep.id
-		let lastStep = tpl.wizard._stepsByIndex[tpl.wizard.indexOf(activeStep.id)-1]
-		let isFinalStep = false
+		const projectID = tpl.projectID() === undefined ? 'new' : tpl.projectID()
 
-		if ($(event.target).find('.wizard-submit-button').length >= 1) {
-			isFinalStep = true
-		}
+		// Construct progress info
+		const wizard = Wizard.get('basic-wizard');
+		const activeStep = wizard.activeStep();
+		let steps = {
+			last: wizard.getStep(wizard.indexOf(wizard.activeStep().id)-1).id,
+			next: activeStep.id,
+			final: $(event.target).find('.wizard-submit-button').length >= 1,
+		};
 
-		steps.last = lastStep
-		steps.next = nextStep
-		steps.final = isFinalStep
-
-		saveProjectQuestions.call({ projectID: projectID, data: tpl.wizard.mergedData(), steps: steps}, (err, resp) => {
+		saveProjectQuestions.call({ projectID: projectID, data: wizard.mergedData(), steps: steps}, (err, resp) => {
 			if (!err) {
-				if (!isFinalStep) { 
-					activeStep.wizard.next();
+				if (projectID !== resp) FlowRouter.setParams({projectID: resp});
 
-					if (projectID !== resp) 
-						FlowRouter.setParams({projectID: resp});
-
-					return
+				if (steps.final) {
+					tpl.wizard.clearData();
+					tpl.wizard.destroy();
+					FlowRouter.go('/');
+					
+					swal({
+						text: `Application has been received! You will now be directed to answer questions about yourself.`,
+						icon: 'success',
+						buttons: {
+								confirm: {
+										text: 'OK',
+										value: true,
+										visible: true,
+										closeModal: true
+								}
+						}
+					}).then(confirmed => {
+						FlowRouter.go('/userInfo')
+					});
 				}
-
-				tpl.wizard.clearData();
-				tpl.wizard.destroy();
-				// notify('Application complete', 'success');
-				FlowRouter.go('/')
-				
-				swal({
-		            text: `Application has been received! You will now be directed to answer questions about yourself.`,
-		            icon: 'success',
-		            buttons: {
-		                confirm: {
-		                    text: 'OK',
-		                    value: true,
-		                    visible: true,
-		                    closeModal: true
-		                }
-		            }
-		        }).then(confirmed => {
-		        	FlowRouter.go('/userInfo')
-		        })
+			} else {
+				AutoForm.getValidationContext(formId).addValidationErrors([err])
 			}
-		})
-		
+		});
 	},
 	'change input[type=radio][name=is_solvable_by_traditional_db]' (event, _tpl) {
 		event.preventDefault()

@@ -1,0 +1,20 @@
+.form-group.autosave-changed .control-label::after {
+  margin-left: 0.5em;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f044";
+}
+
+.form-group.autosave-saved .control-label::after {
+  margin-left: 0.5em;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f058";
+}
+
+.form-group.autosave-failed .control-label::after {
+  margin-left: 0.5em;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: "\f06a";
+}
