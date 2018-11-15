@@ -86,8 +86,8 @@ Template.afTypeahead.onRendered(function () {
     if (this.data.atts.typeaheadDatasets) {
         _.extend(datasets, this.data.atts.typeaheadDatasets)
     }
-
     $('.twitter-typeahead').typeahead(options, datasets)
+    $('.twitter-typeahead').typeahead('val', this.data.value);
 })
 
 Template.afTypeahead.onDestroyed(() => {

@@ -12,6 +12,7 @@ import { notify } from '/imports/modules/notifier'
 Template.userInfo.onCreated(function() {
 	window.UserQuestions = UserQuestions
 	this.userInfoID = () => FlowRouter.getParam("userInfoID")
+	this.hideWizard = new ReactiveVar(true);
 
 	this.autorun(() => {
 		this.subscribe('userInfo')
@@ -23,31 +24,24 @@ Template.userInfo.onCreated(function() {
 
 Template.userInfo.onRendered(function() {
 	this.autorun(() => {
+		if (!this.subscriptionsReady())
+			return;
+
 		const wizard = Wizard.get('user-info-wizard');
-		this.wizard = wizard;
+		// Get data and pass it to all steps
+		const data = UserQuestions.findOne({ '_id' : FlowRouter.getParam("userInfoID") });
+		for (const step of wizard.steps) {
+			wizard.setData(step.id, data);
+		}
 
+		// Get progress and set the current step to the saved one
 		const progress = FormProgress.findOne({ 'form_type_id' : FlowRouter.getParam("userInfoID")  })
-
-		if (progress !== undefined) {
-			const userInfo = UserQuestions.findOne({ '_id' : FlowRouter.getParam("userInfoID") })
-			
-			for (let i = 0; i < wizard.steps.length; i++) {
-				const step = wizard.steps[i];
-				if (step.id === progress.next_step) break;
-
-				const stepData = {}
-				const schemaKeys = step.schema._schemaKeys
-
-				for (let j = 0; j < schemaKeys.length; j++) {
-					const schemaKey = schemaKeys[j];
-					stepData[schemaKey] = userInfo[schemaKey]
-				}
-
-				wizard.setData(step.id, stepData)
-			}
-
+		if (progress) {
 			wizard.show(progress.next_step)
 		}
+
+		// Show the wizard
+		this.hideWizard.set(false);
 	})
 
 	this.autorun(() => {
@@ -65,19 +59,22 @@ Template.userInfo.onRendered(function() {
 })
 
 Template.userInfo.helpers({
-	hasApplication: () => {
+	hideWizard: () => {
+		return Template.instance().hideWizard.get();
+	},
+	hasNoApplication: () => {
 		let user = Meteor.users.findOne({
-            _id: Meteor.userId()
-        })
+			_id: Meteor.userId()
+		});
 
-        if (user) {
-			return ProjectQuestions.find({
-	            $or: [{
-	                createdBy: Meteor.userId(),
-	            }, {
-	               'team_members.email': ((user.emails || [])[0] || {}).address 
-	            }]
-	        }).count()
+		if (user) {
+			return !ProjectQuestions.find({
+				$or: [{
+						createdBy: Meteor.userId(),
+				}, {
+						'team_members.email': ((user.emails || [])[0] || {}).address 
+				}]
+			}).count();
 		}
 	},
 	steps() {
@@ -120,7 +117,7 @@ Template.userInfo.events({
 	'submit' (event, tpl) {
 		event.preventDefault();
 
-		let activeStep = tpl.wizard.activeStep()
+		const activeStep = Wizard.get('user-info-wizard').activeStep();
 		let userInfoID = tpl.userInfoID() === undefined ? 'new' : tpl.userInfoID()
 
 		let steps = {}
