@@ -7,13 +7,17 @@ Template.signup.events({
         event.preventDefault()
         FlowRouter.go('/login')
     },
-
     'submit' (event) {
         event.preventDefault()
-
-        let target = event.target
-
+        let target = event.target;
+        
         if (target.email.value !== '' && target.password.value !== '' && target.username.value !== '') {
+            let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            let emailValidation = re.test(target.email.value);
+            if(!emailValidation){
+                notify('Please provide valid email address.', 'error');
+                return;
+            }
             if (target.confirmPassword.value === target.password.value) {
                 Accounts.createUser({
 					email: target.email.value,
@@ -22,20 +26,16 @@ Template.signup.events({
 				}, (err) => {
                     if (err) {
                         notify(err.message, 'error')
-                        return
+                        return;
                     }
-
                     FlowRouter.go(window.last || '/')
-                    return
+                    return;
                 })
-
-                return
+                return;
             }
-
-            notify('confirm password doesn\'t match password', 'error')
-            return
+            notify('confirm password doesn\'t match password', 'error');
+            return;
         }
-
         notify('email/username/password fields are required', 'error')
     }
 })
