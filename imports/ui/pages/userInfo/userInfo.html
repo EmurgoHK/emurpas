@@ -7,14 +7,14 @@
 						Personal User Questions Form
 					</div>
 					<div class="card-body">
-						{{#unless hasApplication}}
-						<h2>Hi there!</h2>
-                        <p>Before filling out user information, you (or one of your team members) have to submit an application.</p>
-                    	<a class="btn btn-sm btn-primary mb-2" href="/applications"  role="button">Let's Go</a>
-                    	{{else}}
-						{{> wizard id="user-info-wizard" steps=steps buttonClasses="btn btn-primary" persist="false" clearOnDestroy="true" }}
-						<!-- {{> quickForm collection="UserQuestions" id="userQuestionsForm" type="method" meteormethod="addUserInfo" }} -->
-						{{/unless}}
+						{{#if hasNoApplication}}
+							<h2>Hi there!</h2>
+							<p>Before filling out user information, you (or one of your team members) have to submit an application.</p>
+							<a class="btn btn-sm btn-primary mb-2" href="/applications"  role="button">Let's Go</a>
+						{{/if}}
+						<div hidden={{hideWizard}}>
+							{{> wizard id="user-info-wizard" steps=steps buttonClasses="btn btn-primary" persist="false" clearOnDestroy="true" }}
+						</div>
 					</div>
 				</div>
 			</div>
