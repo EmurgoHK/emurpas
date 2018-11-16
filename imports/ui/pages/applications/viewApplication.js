@@ -74,7 +74,7 @@ Template.viewApplication.helpers({
             _id: FlowRouter.getParam('projectID')
         }) || {}
         
-        let to_exclude = ['Created At', 'Author', 'Team members']
+        let to_exclude = ['Created At', 'Author', 'Team members', 'ELO']
 
         return schema.objectKeys().map(key => {
             const label = schema.label(key)

@@ -270,6 +270,13 @@ ProjectQuestions.schema = new SimpleSchema({
         autoform: {
             type: 'hidden'
         }
+    },
+    eloRanking: {
+        type: Number,
+        label: 'ELO',
+        autoform: {
+            type: 'hidden'
+        }
     }
 }, { tracker: Tracker })
 

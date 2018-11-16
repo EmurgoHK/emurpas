@@ -61,7 +61,9 @@ export const newComment = new ValidatedMethod({
             }
         }
 
-        notify(type, resourceId, fieldId, text)
+        try {
+            notify(type, resourceId, fieldId, text)
+        } catch (e) {}
         
         return Comments.insert({
             parentId: parentId,

@@ -5,116 +5,67 @@
                 {{#if isModerator}}
                 <div class="card">
                     <div class="card-header">
-                        {{#with application}}{{#if isInProgress}}<i title="In progress" class="icon-clock"></i>{{/if}} Application #{{_id}}{{/with}}
+                        Side-by-side applications {{#each apps}}#{{_id}} {{/each}} {{#if hasNext}}<button class="btn btn-primary btn-sm js-next"><i class="fas fa-angle-right"></i> Next application</button>{{/if}}
                     </div>
                     <div class="card-body">
                         {{#each questions}}
                         <div class="card shadow">
                             <div class="card-header">
-                                {{#if hasRatings ratings}}
-                                    <a href="" class="text-warning float-right"><strong><i class="fas fa-star"></i> {{ratings.averageRating}}/10</strong></a>
-                                {{/if}}
                                 <h6><a href="" class="text-dark">{{question.label}}</a></h6>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body row">
+                                {{#each apps}}
+                                <div class="{{#if canVote}}col-sm-6{{else}}col-sm-12{{/if}} p-2 border {{#if winner}}border-success{{else}}border-primary{{/if}} rounded">
+                                {{#if isAnswered answer}}
+                                {{#if canVote}}
+                                {{#unless isDelegated}}
+                                {{#if notRated}}
+                                <a href="#" class="js-vote"><i class="fas fa-check float-right" style="font-size: 26px;color: green;"></i></a>
+                                {{/if}}
+                                {{/unless}}
+                                {{/if}}
+                                {{/if}}
+                                <i class="fas fa-star"></i> {{eloRank}}
                                 <p class="card-text">
                                     {{answer}}
                                 </p>
 
-                                {{#if isAnswered answer}}
-                                    {{#if isDelegated}}
+                                <div>
+                                    {{#unless isDelegatedTo}} <!-- you can't further delegate the voting, for simplicity -->
+                                        {{#if notRated}}
+                                        {{#unless delegateIntent}}
+                                        {{#if isDelegated}}
                                         You have delegated this question to {{username delegates.user}}. <br />
                                         <div class="mt-1 p-1">
-                                        <button class="btn btn-outline-primary btn-sm js-revoke" data-scope="{{projectID}}"><i class="fas fa-check"></i> Revoke for this application</button>
-                                        <button class="btn btn-outline-primary btn-sm js-revoke" data-scope="all"><i class="fas fa-clipboard-check"></i> Revoke for all aplications</button>
-                                    </div>
+                                            <button class="btn btn-outline-primary btn-sm js-revoke" data-scope="{{_id}}"><i class="fas fa-check"></i> Revoke for this application</button>
+                                            <button class="btn btn-outline-primary btn-sm js-revoke" data-scope="all"><i class="fas fa-clipboard-check"></i> Revoke for all aplications</button>
+                                        </div>
+                                        {{else}}
+                                        <button class="btn btn-outline-primary mt-2 js-delegate float-right"><i class="fas fa-user"></i> Delegate</button>
+                                        {{/if}}
+                                        {{/unless}}
+                                        {{/if}}
                                     {{else}}
-                                    {{#if hasNotRated ratings}}
-                                        <hr>
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <div class="bg-light pl-3 pr-3 pt-2 pb-1 rounded">
-                                                    <form class="form-horizontal">
-                                                        <div class="form-group row mb-0">
-                                                            <label class="col-md-2 col-form-label">
-                                                                <strong>Rate this reponse</strong>
-                                                            </label>
-                                                            <div class="col-md-10 col-form-label pl-0">
-                                                                {{#each val in ratingValues}}
-                                                                    <div class="form-check form-check-inline">
-                                                                        <input class="form-check-input" type="radio" name="{{question.key}}_rating" id="radio_{{question.key}}_{{val}}" value="{{val}}">
-                                                                        <label class="form-check-label" >{{val}}</label>
-                                                                    </div>
-                                                                {{/each}}
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group row pt-1">
-                                                            <div class="col-md-12">
-                                                                <button class="btn btn-primary btn-sm js-rate-question"><i class="far fa-dot-circle"></i> Submit</button>
-                                                                {{#unless delegatedFrom.length}} <!-- you can't further delegate the voting, for simplicity -->
-                                                                {{#if delegateIntent}}
-                                                                <button class="btn btn-danger btn-sm js-delegate"><i class="fas fa-times"></i> Cancel</button>
-                                                                {{else}}
-                                                                <button class="btn btn-primary btn-sm js-delegate"><i class="fas fa-user"></i> Delegate</button>
-                                                                {{/if}}
-                                                                {{else}}
-                                                                <br />
-                                                                Voting for this question has been delegated to you by:{{#each delegatedFrom}} {{username}}{{/each}}.
-                                                                {{/unless}}
-                                                            </div>
-                                                        </div>
-                                                        {{#if delegateIntent}}
-                                                        Delegate this question to
-                                                        <select class="js-user-choice-{{question.key}}" name="user">
-                                                            {{#each moderators}}
-                                                            <option value="{{_id}}">{{username}}</option>
-                                                            {{/each}}
-                                                        </select>
-                                                            <button class="btn btn-outline-primary btn-sm js-delegate-question" data-question="{{question.key}}" data-scope="{{projectID}}"><i class="fas fa-check"></i> For this application</button>
-                                                            <button class="btn btn-outline-primary btn-sm js-delegate-question" data-question="{{question.key}}" data-scope="all"><i class="fas fa-clipboard-check"></i> For all applications</button>
-                                                        {{/if}}
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    {{else}}
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                                <button type="submit" class="btn btn-outline-primary mb-2 js-edit-rating float-right" id="edit-{{question.key}}">Edit Rating</button>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <div id="edit-{{question.key}}-rating" class="d-none bg-light pl-3 pr-3 pt-2 pb-1 rounded edit-rating">
-                                                <form class="form-horizontal">
-                                                    <div class="form-group row mb-0">
-                                                        <label class="col-md-2 col-form-label">
-                                                            <strong>Edit rating for the response</strong>
-                                                        </label>
-                                                        <div class="col-md-10 col-form-label pl-0">
-                                                            {{#each val in ratingValues}}
-                                                                <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="{{question.key}}_rating" id="radio_{{question.key}}_{{val}}" value="{{val}}"  {{previousRating ratings val}}>
-                                                                    <label class="form-check-label" >{{val}}</label>
-                                                                </div>
-                                                            {{/each}}
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group row pt-1">
-                                                        <div class="col-md-12">
-                                                            <button class="btn btn-primary btn-sm js-rate-question" id="edit-{{question.key}}-submit"><i class="far fa-dot-circle"></i> Submit</button>
-                                                            <button class="btn btn-primary btn-sm js-rate-cancel" id="edit-{{question.key}}-cancel"><i class="far fa-dot-circle"></i> Cancel</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        <br />
+                                        Voting for this question has been delegated to you by:{{#each delegatedFrom}} {{username}}{{/each}}.
+                                    {{/unless}}
+                                    {{#if delegateIntent}}
+                                    <span class="p-1 float-right">
+                                        Delegate this question to
+                                        <select class="js-user-choice-{{question.key}}" style="width: 183px;" name="user">
+                                            {{#each moderators}}
+                                            <option value="{{_id}}">{{username}}</option>
+                                            {{/each}}
+                                        </select>
+                                        <br />
+                                        <button class="btn btn-outline-primary btn-sm js-delegate-question" data-question="{{question.key}}" data-scope="{{_id}}"><i class="fas fa-check"></i> For this application</button>
+                                        <button class="btn btn-outline-primary btn-sm js-delegate-question" data-question="{{question.key}}" data-scope="all"><i class="fas fa-clipboard-check"></i> For all applications</button>
+                                        <button class="btn btn-outline-danger btn-sm js-delegate"><i class="fas fa-times"></i> Cancel</button>
+                                    </span>
                                     {{/if}}
-                                {{/if}}
-                                {{/if}}
+                                </div>
 
-                                <div class="float-right">
+                                <div>
                                     <a href="#" class="btn btn-outline-primary mt-2 comment-new">Ask a question</a>
                                     {{#if commentCount}}<a href="#" class="btn btn-outline-primary mt-2 comment-show">{{#if showComments}}Hide{{else}}Show{{/if}} comments ({{commentCount}})</a>{{/if}}
                                 </div>
@@ -127,7 +78,7 @@
                                         <div class="card">
                                             <div class="card-body">
                                                 <div class="form-group">
-                                                    <textarea class="form-control" id="comments-{{question.key}}" name="comment" rows="3" placeholder="Markdown is supported..." required></textarea>
+                                                    <textarea class="form-control" id="comments-{{question.key}}-{{_id}}" name="comment" rows="3" placeholder="Markdown is supported..." required></textarea>
                                                 </div>
 
                                                 <p class="text-danger">{{commentInvalidMessage}}</p>
@@ -149,12 +100,14 @@
                                 <div class="row">
                                     <div class="col-sm-12 news-form comments">
                                     {{#each comments}}
-                                        {{> commentBody ident=0 comment=this _id=projectID type=type fieldId=../question.key}}
+                                        {{> commentBody ident=0 comment=this _id=../_id type=type fieldId=../question.key}}
                                     {{/each}}
                                     </div>
                                 </div>
                                 {{/if}}   
                                 </div>
+                                {{/each}}
+                            </div>
                             </div>
                         {{/each}}
                     </div>

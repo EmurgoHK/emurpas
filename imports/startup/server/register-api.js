@@ -30,3 +30,8 @@ import '/imports/api/notifications/server/publications'
 // delegates api
 import '/imports/api/delegates/methods'
 import '/imports/api/delegates/server/publications'
+
+// elo api
+import '/imports/api/elo/methods'
+import '/imports/api/elo/server/startup'
+import '/imports/api/elo/server/publications'

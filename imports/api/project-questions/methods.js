@@ -28,6 +28,8 @@ export const notifyApplication = (type, resId, fieldId, text) => {
     		_id: application.createdBy
     	}))
 
+    	users = users.filter(i => !!i)
+
     	users.forEach(i => { // notify all users associated with the application
         	sendNotification(i._id, `New question on your application (${resId}): ${text} (${fieldId})`, 'System', `/applications/${application._id}/view`)
     	})

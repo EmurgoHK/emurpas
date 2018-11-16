@@ -4,31 +4,36 @@ import SimpleSchema from 'simpl-schema'
 import { QuestionRating } from './question-rating'
 import { Delegates } from '/imports/api/delegates/delegates'
 
+import crypto from 'crypto'
+
 export const rateQuestion = new ValidatedMethod({
 	name: 'rateQuestion',
 	validate: new SimpleSchema({
-		applicationId: {
+        questionId: {
 			type: String,
 			optional: false
         },
-        questionCode: {
-			type: String,
-			optional: false
+        applications: {
+            type: Array,
+            optional: false
         },
-        rating: {
-            type: Number,
+        'applications.$': {
+            type: String
+        },
+        winner: {
+            type: String,
             optional: false
         }
 	}).validator({
     	clean: true,
     	filter: false
     }),
-    run({ applicationId, questionCode, rating }) {
+    run({ questionId, applications, winner }) {
         if (Meteor.isServer){
             let delegates = Delegates.find({
                 delegateTo: Meteor.userId(),
-                questionId: questionCode
-            }).fetch().filter(i => ~i.scope.indexOf(applicationId) || ~i.scope.indexOf('all')).filter(i => !~(i.except || []).indexOf(applicationId)).map(i => ({
+                questionId: questionId
+            }).fetch().filter(i => ~i.scope.indexOf(applications[0]) || ~i.scope.indexOf(applications[1]) || ~i.scope.indexOf('all')).filter(i => !~(i.except || []).indexOf(applications[0]) && !~(i.except || []).indexOf(applications[1])).map(i => ({
                 _id: i.createdBy
             }))
 
@@ -37,88 +42,34 @@ export const rateQuestion = new ValidatedMethod({
             })
             
             delegates.forEach(i => {
-                let questionRating = QuestionRating.findOne({
-                    applicationId: applicationId, 
-                    questionCode: questionCode
-                })
-
-                if (questionRating && questionRating !== undefined) {
-                    let ratingCount = questionRating.ratingCount
-
-                    // calculate new average rating by summing all
-                    // existing ratings + new rating and divide by new ratingCount
-                    let avgRating = rating
-
-                    let previosRating = questionRating.ratings.filter(function(r) { return r.userId === i._id});
-                    // check if user has already voted
-                    // EDIT mode
-                    if (previosRating && previosRating.length > 0) {
-                        
-                        // remove previous rating from the set
-                        QuestionRating.update({
-                            _id: questionRating._id
-                        }, {
-                            $pull: {
-                                ratings: {
-                                    userId: i._id
-                                }
-                            }
-                        })
-
-                        // calculate new average rating by summing all
-                        // existing ratings + new rating - old rating and divide by old ratingCount
-                        avgRating = ((questionRating.ratings.reduce((acc, curr) => {
-                            return acc + curr.rating
-                        }, 0)) + avgRating - previosRating[0].rating) / ratingCount
-
-                    } else {
-
-                        // If the user is rating the question for the first time we need to increment the rating count & calculate the average
-                        ratingCount += 1
-
-                        // calculate new average rating by summing all
-                        // existing ratings + new rating and divide by new ratingCount
-                        avgRating = ((questionRating.ratings.reduce((acc, curr) => {
-                            return acc + curr.rating
-                        }, 0)) + avgRating) / ratingCount
-                    }
-
-
-                    // Add new question rating to set and
-                    // update  averageRating and ratingCount
-                    QuestionRating.update({
-                        _id: questionRating._id
-                    }, {
-                        $set: {
-                            averageRating: avgRating,
-                            ratingCount: ratingCount,
-                            updatedAt: new Date().getTime()
-                        },
-                        $addToSet: {
-                            ratings: {
-                                userId: i._id,
-                                rating: rating,
-                                votedOn: new Date().getTime()
-                            }
-                        }
-                    })
-
-                    // return question rating Id
-                    return questionRating._id
+                if (winner === 'tie') {
+                    loser = 'lie'
                 }
 
-                // Go ahead and insert an initial record of the question rating
-                return QuestionRating.insert({
-                    applicationId: applicationId,
-                    questionCode: questionCode,
-                    averageRating: rating,
-                    ratingCount: 1,
-                    ratings: [{
-                        userId: i._id,
-                        rating: rating,
-                        votedOn: new Date().getTime()
-                    }],
-                    createdAt: new Date().getTime()
+                let loser = applications[0]
+
+                if (winner === loser) {
+                    loser = applications[1]
+                }
+
+                const userInt = parseInt(`0x${crypto.createHash('md5').update(i._id).digest('hex').slice(0, 10)}`, 16)
+                const dec_i = parseInt(`0x${crypto.createHash('md5').update(applications[0]).digest('hex').slice(0, 10)}`, 16)
+                const dec_j = parseInt(`0x${crypto.createHash('md5').update(applications[1]).digest('hex').slice(0, 10)}`, 16)
+
+                const ratingId = ((dec_i + dec_j + userInt) + parseInt(`0x${crypto.createHash('md5').update(questionId).digest('hex').slice(0, 10)}`, 16)).toString()
+
+                return QuestionRating.upsert({
+                    _id: ratingId
+                }, {
+                    $set: {
+                        processed: false,
+                        winner: winner,
+                        loser: loser,
+                        applications: applications,
+                        answeredAt: new Date().getTime(),
+                        questionId: questionId,
+                        owner: i._id
+                    }
                 })
             })
         }
