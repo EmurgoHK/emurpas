@@ -8,7 +8,7 @@ export const updateFormProgress = (formType, formTypeId, steps) => {
     data.updated_at = new Date().getTime()
 
     let formProgress = FormProgress.findOne({ 'form_type_id' : formTypeId })
-    
+
     if (formProgress === undefined) {
         data.user_id = Meteor.userId()
         data.form_type = formType

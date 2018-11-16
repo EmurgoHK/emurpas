@@ -1,4 +1,5 @@
 import './userInfo.html'
+import './userInfo.scss'
 
 import { Template } from 'meteor/templating'
 import { UserQuestions } from '/imports/api/userQuestions/userQuestions'
@@ -114,56 +115,73 @@ Template.userInfo.helpers({
 })
 
 Template.userInfo.events({
-	'submit' (event, tpl) {
+	'change form' (event, tpl) {
 		event.preventDefault();
+		const formGroup = $(event.target).closest('.form-group');
 
-		const activeStep = Wizard.get('user-info-wizard').activeStep();
+		formGroup.removeClass('autosave-saved');
+		formGroup.removeClass('autosave-failed');
+		formGroup.addClass('autosave-changed');
+		
+		// Get the id of the changed form and field
+		const formId = event.target.form.id;
+		const targetKey = formGroup.find('[data-schema-key]').data('schema-key');
+		
+		// If the field isn't valid by itself it shouldn't be updated (this doesn't check required, that is only check on clicking next)
+		if (!AutoForm.validateField(targetKey, formId))
+			return;
+
+		// Get the value of the field through AutoForm
+		const value = AutoForm.getFieldValue(targetKey, formId) || null;
+		
 		let userInfoID = tpl.userInfoID() === undefined ? 'new' : tpl.userInfoID()
 
-		let steps = {}
-		let lastStep = activeStep.wizard._stepsByIndex[activeStep.wizard.indexOf(activeStep.id)-1]
-		let nextStep = activeStep.id
-		let isFinalStep = false
+		// Construct progress info
+		const wizard = Wizard.get('user-info-wizard');
+		const activeStep = wizard.activeStep();
+		let steps = {
+			last: wizard.getStep(wizard.indexOf(activeStep.id)-1).id,
+			next: activeStep.id,
+			final: false,
+		};
 
-		if ($(event.target).find('.wizard-submit-button').length >= 1) {
-			isFinalStep = true
-		}
-
-		steps.last = lastStep
-		steps.next = nextStep
-		steps.final = isFinalStep
-
-		addUserInfo.call({ userInfoID: userInfoID, userInfo: activeStep.wizard.mergedData(), steps: steps}, (err, resp) => {
+		addUserInfo.call({ userInfoID: userInfoID, userInfo: {[targetKey]: value}, steps: steps}, (err, resp) => {
+			formGroup.removeClass('autosave-changed');
 			if (!err) {
-				if (!isFinalStep) { 
-					if (userInfoID !== resp)
-						FlowRouter.setParams({userInfoID: resp})
-
-					activeStep.wizard.next();
-					return
-				}
-
-				tpl.wizard.clearData();
-				tpl.wizard.destroy();
-				notify('Application complete', 'success');
-				FlowRouter.go('/');
+				if (userInfoID !== resp) FlowRouter.setParams({userInfoID: resp})
+				formGroup.addClass('autosave-saved');
+			} else {
+				formGroup.addClass('autosave-failed');
+				AutoForm.getValidationContext(formId).addValidationErrors([err])
 			}
-		})
+		});	
+	},
+	"submit": (event, tpl) => {
+		event.preventDefault();
+		
+		const wizard = Wizard.get('user-info-wizard');
+		const activeStep =wizard.activeStep();
+		let userInfoID = tpl.userInfoID() === undefined ? 'new' : tpl.userInfoID()
+
+		let steps = {
+			last: wizard.getStep(wizard.indexOf(wizard.activeStep().id)-1).id,
+			next: activeStep.id,
+			final: $(event.target).find('.wizard-submit-button').length >= 1,
+		};
+
+		addUserInfo.call({ userInfoID: userInfoID, userInfo: wizard.mergedData(), steps: steps}, (err, resp) => {
+			if (!err) {
+				if (userInfoID !== resp) FlowRouter.setParams({userInfoID: resp})
+				if (steps.final) {
+					wizard.clearData();
+					wizard.destroy();
+					notify('Application complete', 'success');
+					FlowRouter.go('/');
+				}
+			} else {
+				AutoForm.getValidationContext(formId).addValidationErrors([err])
+			}
+		});	
 		
 	}
-})
-
-AutoForm.addHooks(['userQuestionsForm'], {
-	onError: (_formType, error) => {
-		notify('Failed to save questions!', 'error')
-	},
-	after: {
-    	method: (error, _result) => {
-      		if (error) {
-				notify(err.message, 'error')
-      		} else {
-				notify('Inserted successfully.', 'success')
-      		}
-    	}
-  	}
-})
+});
