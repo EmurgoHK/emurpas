@@ -1,60 +1,65 @@
 const assert = require('assert')
 const baseUrl = 'http://localhost:3000'
 
+function callMethod(browser, methodName, ...args) {
+    const result = browser.executeAsync(
+        (methodName, ...args) => {
+        const done = args.pop();
+        Meteor.call(methodName, ...args, (err, res) => done({ err, res }));
+        },
+        methodName,
+        ...args
+    );
+
+    if (result.value.err) throw result.err;
+
+    return result.value.res;
+}
+
+function waitForPageLoad(browser, url) {
+    browser.waitUntil(() => browser.getUrl() === baseUrl + url);
+    browser.executeAsync(done => Tracker.afterFlush(done));
+    browser.pause(500); // TODO: figure out a method to wait for event subscriptions/dataloading to finish
+}
+
+  
 describe('New application', function () {
     before(() => {
         browser.url(`${baseUrl}/`)
-        browser.pause(5000)
+        waitForPageLoad(browser, '/')
 
-        browser.execute(() => {
-            Meteor.call('generateTestUserUI', (err, data) => {})
-
-            return 'ok'
-        })
-
-        browser.pause(5000)
-
-        browser.execute(() => Meteor.loginWithPassword('testing', 'testing'))
-
-        browser.pause(10000)
-
-        browser.execute(() => {
-            Meteor.call('generateTestModerator', (err, data) => {})
-        })
-
-        browser.pause(2000)
+        callMethod(browser, 'generateTestUserUI');
+        browser.executeAsync((done) => Meteor.loginWithPassword('testing', 'testing', done))
+        callMethod(browser, 'generateTestModerator');
     })
 
     it('it should render correctly', () => {
-        browser.url(`${baseUrl}/applications`)
-        browser.pause(5000)
-        
-        assert(browser.isExisting('#basic-wizard'), true)
-        assert(browser.isVisible('#basic-wizard'), true)
+        browser.url(`/applications`);
+        waitForPageLoad(browser, '/applications');
+
+        browser.waitForExist('#basic-wizard');
+        browser.waitForVisible('#basic-wizard');
     })
 
     it('it should have 4 steps', () => {
-        assert(browser.execute(() => $('.steps').find('li').length).value === 4, true)
+        assert.equal(browser.element('.steps').elements('li').value.length, 4)
     })
 
     it('it shouldn\'t allow access to next step if data is missing', () => {
         browser.click('.wizard-next-button')
 
-        browser.pause(3000)
+        browser.waitForExist('.form-group.has-error')
+        browser.waitForText('.help-block');
 
-        assert(browser.execute(() => $('.steps').find('li.active').text().trim()).value === 'Step One', true)
+        assert.equal(browser.getText('.steps li.active').trim(), 'Step One')
     })
 
     it('it should allow insertion when inputs are valid', () => {
-        let steps = browser.execute(() => Blaze.getView($('.card').get(0))._templateInstance.wizard.steps.map(i => ({
+        let steps = browser.execute(() => Wizard.get('basic-wizard').steps.map(i => ({
             keys: i.schema._schemaKeys
         }))).value
 
-        const conv = ['One', 'Two', 'Three', 'Four'] // funny, but it works
-
         steps.forEach((i, ind) => {
-            // assert(browser.execute(() => $('.steps').find('li.active').text().trim()).value === `Step ${conv[ind]}`, true)
-
             let keys = i.keys
 
             keys.forEach(j => {
@@ -63,47 +68,36 @@ describe('New application', function () {
                     browser.execute(() => $($('input[name="is_solvable_by_traditional_db"]').get(2)).click()) // test out the 'possibly' option
                 } else if (j === 'team_members') {
                     browser.execute(() => $('input[name="team_members.0.name"]').val('test'))
-                    browser.pause(2000)
                     browser.execute(() => $('input[name="team_members.0.email"]').val('test@test.com'))
-                    browser.pause(2000)
                     browser.execute(() => $('.autoform-add-item').click())
                 } else {
                     browser.execute((j) => $(`.form-control[name="${j}"]`).val('test'), j)
                 }
-
-                browser.pause(2000)
             })
-
-            browser.pause(5000)
 
             if (ind < 3) {
                 browser.execute(() => $('.wizard-next-button').focus())
-                browser.pause(2000)
                 browser.click('.wizard-next-button')
             } else {
                 browser.execute(() => $('.wizard-submit-button').focus())
-                browser.pause(2000)
                 browser.click('.wizard-submit-button')
             }
-
-            browser.pause(3000)
         })
 
-        browser.pause(3000)
-        assert(browser.execute(() => FlowRouter.current().route.name === 'App.home').value, true)
+        waitForPageLoad(browser, '/');
 
-        browser.click('.swal-button--confirm')
-        browser.pause(3000)
+        browser.waitForEnabled('.swal-button--confirm');
+        browser.click('.swal-button--confirm');
 
-        assert(browser.execute(() => FlowRouter.current().route.name === 'userInfo').value, true)
+        waitForPageLoad(browser, '/userInfo');
     })
 
     it('userinfo should render correctly after application has been added', () => {
         browser.url(`${baseUrl}/userInfo`)
-        browser.pause(10000)
+        waitForPageLoad(browser, '/userInfo');
         
-        assert(browser.isExisting('#user-info-wizard'), true)
-        assert(browser.isVisible('#user-info-wizard'), true)
+        assert.ok(browser.isExisting('#user-info-wizard'))
+        assert.ok(browser.isVisible('#user-info-wizard'))
     })
 
     it('userinfo should have 3 steps', () => {
@@ -113,20 +107,21 @@ describe('New application', function () {
     it('userinfo shouldn\'t allow access to next step if data is missing', () => {
         browser.click('.wizard-next-button')
 
-        browser.pause(3000)
+        browser.waitForExist('.form-group.has-error')
+        browser.waitForText('.help-block');
 
-        assert(browser.execute(() => $('.steps').find('li.active').text().trim()).value === 'Step One', true)
+        assert.equal(browser.getText('.steps li.active').trim(), 'Step One')
     })
 
     it('userinfo should allow insertion when inputs are valid', () => {
-        let steps = browser.execute(() => Blaze.getView($('.card').get(0))._templateInstance.wizard.steps.map(i => ({
+        let steps = browser.execute(() => Wizard.get('user-info-wizard').steps.map(i => ({
             keys: i.schema._schemaKeys
         }))).value
 
         const conv = ['One', 'Two', 'Three'] // funny, but it works
 
         steps.forEach((i, ind) => {
-            assert(browser.execute(() => $('.steps').find('li.active').text().trim()).value === `Step ${conv[ind]}`, true)
+            browser.waitUntil(() => browser.getText('.steps li.active').trim() === `Step ${conv[ind]}`);
 
             let keys = i.keys
 
@@ -137,152 +132,123 @@ describe('New application', function () {
                 } else if (j === 'country') {
                     //browser.execute(() => $(`.form-control[name="country"]`).val('Serb').keypress().focus())
                     browser.setValue(`.form-control[name="country"]`, 'Serb')
-                    browser.pause(2000)
                     $('.tt-selectable').click()
                 } else {
                     browser.execute((j) => $(`.form-control[name="${j}"]`).val('test'), j)
                 }
-
-                browser.pause(2000)
             })
-
-            browser.pause(5000)
-
             if (ind < 2) {
-                browser.execute(() => $('.wizard-next-button').focus())
-                browser.pause(2000)
-                browser.click('.wizard-next-button')
+                browser.execute(() => $('.wizard-next-button').focus());
+                browser.click('.wizard-next-button');
             } else {
-                browser.execute(() => $('.wizard-submit-button').focus())
-                browser.pause(2000)
-                browser.click('.wizard-submit-button')
+                browser.execute(() => $('.wizard-submit-button').focus());
+                browser.click('.wizard-submit-button');
             }
-
-            browser.pause(5000)
-        })
-
-        browser.pause(2000)
-        assert(browser.execute(() => FlowRouter.current().route.name === 'App.home').value, true)
+        });
+        waitForPageLoad(browser, '/');
     })
 
     it ('should show up on the moderator panel', () => {
-        browser.url(`${baseUrl}/moderator/applications`)
-        browser.pause(6000)
+        browser.url(`${baseUrl}/moderator/applications`);
+        waitForPageLoad(browser, '/moderator/applications');
 
         assert(browser.execute(() => $('.documents-index-item').length > 0), true)
     })
 
     it ('moderator can view more details', () => {
         browser.click('.btn-secondary')
-        browser.pause(6000)
+        // waitForPageLoad(browser, '/moderator/application/*');
 
         assert(browser.execute(() => Number($('.card-body').text().trim().split(' ').pop()) > 0), true)
     })
 
     it('user can comment', () => {
         browser.click('.comment-new')
-        browser.pause(2000)
-
-        browser.setValue('#comments-problem_description', 'Test comment')
-        browser.pause(2000)
+        
+        browser.waitForEnabled('.news-form textarea');
+        browser.setValue('.news-form textarea', 'Test comment')
 
         browser.click('.new-comment')
-        browser.pause(3000)
 
-        assert(browser.execute(() => Array.from($('.comments').find('.card-body span')).some(i => $(i).text().includes('Test comment'))).value, true)
+        browser.waitUntil(() => browser.elements('.comments .card-body span').value.some(e => e.getText().trim() === 'Test comment'));
     })
 
     it('user can reply to a comment', () => {
         browser.click('.reply')
-        browser.pause(2000)
 
         let comment = browser.execute(() => testingComments.findOne({}, {
             sort: {
                 createdAt: -1
             }
         })).value
-
+        browser.waitForEnabled(`.rep-comment-${comment._id}`);
         browser.setValue(`.rep-comment-${comment._id}`, 'Test reply')
-        browser.pause(1000)
 
         browser.click('.reply-comment')
-        browser.pause(3000)
 
-        assert(browser.execute(() => Array.from($('.comments').find('.card-body span')).some(i => $(i).text().includes('Test reply'))).value, true)
+        browser.waitUntil(() => browser.elements('.comments .card-body span').value.some(e => e.getText().trim() === 'Test reply'));
     })
 
     it('user can edit a comment', () => {
-        browser.execute(() => $('.news-settings').find('.dropdown-menu').addClass('show'))
-        browser.pause(3000)
-
-        browser.click('.edit-mode')
-        browser.pause(2000)
-
         let comment = browser.execute(() => testingComments.findOne({}, {
             sort: {
                 createdAt: -1
             }
         })).value
+        browser.click(`#comment-${comment._id} .news-settings`);
+        
+        browser.waitForVisible(`#comment-${comment._id} .edit-mode`);
+        browser.waitForEnabled(`#comment-${comment._id} .edit-mode`);
+        browser.click(`#comment-${comment._id} .edit-mode`)
 
         browser.setValue(`.edit-test`, 'Test comment 2')
-        browser.pause(1000)
 
         browser.click('.edit-comment')
-        browser.pause(3000)
 
-        assert(browser.execute(() => Array.from($('.comments').find('.card-body span')).some(i => $(i).text().includes('Test comment 2'))).value, true)
+        browser.waitUntil(() => browser.getText(`#comment-${comment._id} .card-text`).trim() === 'Test comment 2')
     })
 
     it('user can remove a comment', () => {
-        let count = browser.execute(() => $('.comments').find('.card').length).value
+        let comment = browser.execute(() => testingComments.findOne({}, {
+            sort: {
+                createdAt: -1
+            }
+        })).value;
+        // browser.click(`#comment-${comment._id} .news-settings`);
 
-        browser.execute(() => $('.news-settings').find('.dropdown-menu').addClass('show'))
-        browser.pause(3000)
+        browser.waitForVisible(`#comment-${comment._id} .delete-comment`);
+        browser.waitForEnabled(`#comment-${comment._id} .delete-comment`);
+        browser.click(`#comment-${comment._id} .delete-comment`);
 
-        browser.click('.delete-comment')
-        browser.pause(2000)
+        browser.waitForEnabled('.swal2-confirm');
+        browser.click('.swal2-confirm');
 
-        browser.click('.swal2-confirm')
-        browser.pause(2000)
-
-        let countN = browser.execute(() => $('.comments').find('.card').length).value
-
-        assert(count === countN + 1, true)
+        browser.waitUntil(() => !browser.isExisting(`#comment-${comment._id}`));
     })
 
     it ('moderator can delegate a question to another moderator', () => {
+        browser.waitForExist('.js-delegate')
+        browser.waitForVisible('.js-delegate')
         browser.click('.js-delegate')
-        browser.pause(2000)
 
-        assert(browser.isExisting('.js-delegate-question'))
-        assert(browser.isVisible('.js-delegate-question'))
+        browser.waitForExist('.js-delegate-question')
+        browser.waitForVisible('.js-delegate-question')
 
         browser.click('.js-delegate-question')
-        browser.pause(2000)
 
-        assert(browser.isExisting('.js-revoke'))
-        assert(browser.isVisible('.js-revoke'))
+        browser.waitForExist('.js-revoke')
+        browser.waitForVisible('.js-revoke')
     })
 
     it ('moderator can revoke question delegation', () => {
         browser.click('.js-revoke')
-        browser.pause(2000)
 
-        assert(browser.isExisting('.js-delegate'))
-        assert(browser.isVisible('.js-delegate'))
+        browser.waitForExist('.js-delegate')
+        browser.waitForVisible('.js-delegate')
     })
 
     after(() => {
-        browser.pause(3000)
-
-        browser.execute(() => {
-            Meteor.call('removeTestApplication', (err, data) => {})
-
-            Meteor.call('removeTestUserInfo', (err, data) => {})
-
-            return 'ok'
-        })
-
-        browser.pause(5000)
+        callMethod(browser, 'removeTestApplication')
+        callMethod(browser, 'removeTestUserInfo');
     })
 })

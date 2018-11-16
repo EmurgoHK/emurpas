@@ -49,7 +49,7 @@ if (Meteor.isDevelopment) {
     Meteor.methods({
         removeTestUserInfo: () => {
             let uq = UserQuestions.findOne({
-                problem_description: 'test'
+                fullName: 'test'
             })
 
             if (uq) {
@@ -60,7 +60,7 @@ if (Meteor.isDevelopment) {
             	FormProgress.remove({
             		form_type_id: uq._id
             	})
-            }
+			}
         }
     })
 }
