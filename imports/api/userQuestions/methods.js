@@ -15,7 +15,7 @@ export const addUserInfo = new ValidatedMethod({
                 UserQuestions.update({ '_id' : userInfoID }, { $set : _.extend(userInfo, { updatedAt: new Date().getTime() }) })
             }
 
-            updateFormProgress('user-info', userInfoID, steps)
+            updateFormProgress('user-info', userInfoID, '', steps)
             return userInfoID
         }
     }

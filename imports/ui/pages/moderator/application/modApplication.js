@@ -128,7 +128,7 @@ Template.modApplication.helpers({
     questions: () => {
         let schema = ProjectQuestions.schema
 
-        let to_exclude = ['Created At', 'Author', 'Team members', 'ELO']
+        let to_exclude = ['Created At', 'Author', 'Team members', 'ELO', 'ID']
 
         return schema.objectKeys().map(key => {
             const label = schema.label(key)

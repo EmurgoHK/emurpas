@@ -55,6 +55,10 @@ ProjectQuestions.schema = new SimpleSchema({
     id : {
       type:  Number,
       optional : false,
+      label: 'ID',
+      autoform: {
+        type: 'hidden'
+      }
     },
     problem_description: {
         type:  String,

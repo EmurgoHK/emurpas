@@ -30,7 +30,7 @@ describe('New application', function () {
 
         callMethod(browser, 'generateTestUserUI');
         browser.executeAsync((done) => Meteor.loginWithPassword('testing', 'testing', done))
-        callMethod(browser, 'generateTestModerator');
+        callMethod(browser, 'generateTestModerator')
     })
 
     it('it should render correctly', () => {
@@ -149,6 +149,8 @@ describe('New application', function () {
     })
 
     it ('should show up on the moderator panel', () => {
+        callMethod(browser, 'generateTestApplication')
+
         browser.url(`${baseUrl}/moderator/applications`);
         waitForPageLoad(browser, '/moderator/applications');
 
@@ -160,6 +162,36 @@ describe('New application', function () {
         // waitForPageLoad(browser, '/moderator/application/*');
 
         assert(browser.execute(() => Number($('.card-body').text().trim().split(' ').pop()) > 0), true)
+    })
+
+    it ('moderator can delegate a question to another moderator', () => {
+        browser.waitForExist('.js-delegate')
+        browser.waitForVisible('.js-delegate')
+        browser.click('.js-delegate')
+
+        browser.waitForExist('.js-delegate-question')
+        browser.waitForVisible('.js-delegate-question')
+
+        browser.click('.js-delegate-question')
+
+        browser.waitForExist('.js-revoke')
+        browser.waitForVisible('.js-revoke')
+    })
+
+    it ('moderator can revoke question delegation', () => {
+        browser.click('.js-revoke')
+
+        browser.waitForExist('.js-delegate')
+        browser.waitForVisible('.js-delegate')
+    })
+
+    it('moderator can vote', () => {
+        assert(browser.isExisting('.js-vote'))
+        assert(browser.isExisting('.js-vote'))
+
+        browser.execute(() => $('.js-vote').click())
+        
+        browser.waitForVisible('.card-body .border-success')
     })
 
     it('user can comment', () => {
@@ -224,27 +256,6 @@ describe('New application', function () {
         browser.click('.swal2-confirm');
 
         browser.waitUntil(() => !browser.isExisting(`#comment-${comment._id}`));
-    })
-
-    it ('moderator can delegate a question to another moderator', () => {
-        browser.waitForExist('.js-delegate')
-        browser.waitForVisible('.js-delegate')
-        browser.click('.js-delegate')
-
-        browser.waitForExist('.js-delegate-question')
-        browser.waitForVisible('.js-delegate-question')
-
-        browser.click('.js-delegate-question')
-
-        browser.waitForExist('.js-revoke')
-        browser.waitForVisible('.js-revoke')
-    })
-
-    it ('moderator can revoke question delegation', () => {
-        browser.click('.js-revoke')
-
-        browser.waitForExist('.js-delegate')
-        browser.waitForVisible('.js-delegate')
     })
 
     after(() => {
