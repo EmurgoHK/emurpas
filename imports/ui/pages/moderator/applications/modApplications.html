@@ -26,7 +26,8 @@
                                     <tbody>
                                         {{#each formProgress}}
                                         <tr class="documents-index-item">
-                                            <td scope="row">{{form_type_id}}</td>
+                                            <!-- Check for old entiries which doesn't kave form_id -->
+                                            <td scope="row">{{#if form_id}} {{form_id}} {{else}} {{form_type_id}} {{/if}}</td>
                                             <td scope="row">{{author user_id}}</td>
                                             <td scope="row">{{formatDate created_at}}</td>
                                             <td scope="row">{{formatDate updated_at}}</td>

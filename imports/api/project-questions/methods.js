@@ -3,7 +3,7 @@ import SimpleSchema from 'simpl-schema'
 
 import { ProjectQuestions } from './project-questions'
 import { updateFormProgress } from '../form-progress/methods'
-
+import { ApplicationCount } from './application-count'
 import { FormProgress } from '../form-progress/form-progress'
 
 import { isModerator } from '/imports/api/user/methods'
@@ -11,6 +11,33 @@ import { isModerator } from '/imports/api/user/methods'
 import { sendNotification } from '/imports/api/notifications/methods'
 
 SimpleSchema.extendOptions(['autoform'])
+
+// Auto Increment Index Number for Application ID
+
+function uniqueIndex (indexOf) {
+  var countObj = ApplicationCount.findOne({
+    type: indexOf
+  });
+  var count = 0;
+  if (countObj) {
+    ApplicationCount.update({
+      type: indexOf
+    }, {
+      $inc: {
+	      count: 1
+      }
+    });
+    count = countObj.count + 1;
+  }
+  else {
+    ApplicationCount.insert({
+      type: indexOf,
+      count: 1
+    });
+    count = 1;
+  }
+  return count;
+};
 
 export const notifyApplication = (type, resId, fieldId, text) => {
 	let application = ProjectQuestions.findOne({
@@ -37,22 +64,23 @@ export const notifyApplication = (type, resId, fieldId, text) => {
 }
 
 export const saveProjectQuestions = new ValidatedMethod({
-    name: 'saveProjectQuestions',
-    validate (_params) { },
-    run({ projectID, data, steps }) {
-        if (Meteor.isServer) {
-            if (Meteor.userId()) {
-                if (projectID === 'new') {
-                    projectID = ProjectQuestions.insert(data, {validate: false})   
-                } else {
-                    ProjectQuestions.update({ '_id' : projectID }, { $set : data })
-                }
-
-                updateFormProgress('project', projectID, steps)
-                return projectID
-            }
+  name: 'saveProjectQuestions',
+  validate (_params) { },
+  run({ projectID, data, steps }) {
+    if (Meteor.isServer) {
+      if (Meteor.userId()) {
+        if (projectID === 'new') {
+          data.id = uniqueIndex('application')
+          projectID = ProjectQuestions.insert(data, {validate: false})   
+        } else {
+          ProjectQuestions.update({ '_id' : projectID }, { $set : data })
         }
+        let formId = data.id
+        updateFormProgress('project', projectID, formId, steps)
+        return projectID
+      }
     }
+  }
 })
 
 export const removeProjectQuestions = new ValidatedMethod({
