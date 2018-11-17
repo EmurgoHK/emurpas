@@ -50,6 +50,10 @@ if (Meteor.isServer) {
 
 
 ProjectQuestions.schema = new SimpleSchema({
+    id : {
+      type:  Number,
+      optional : false,
+    },
     problem_description: {
         type:  String,
         max: 300,

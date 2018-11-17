@@ -1,6 +1,6 @@
 import { FormProgress } from './form-progress'
 
-export const updateFormProgress = (formType, formTypeId, steps) => {
+export const updateFormProgress = (formType, formTypeId, formId, steps) => {
     let data = {}
     data.last_step = steps.last
     data.next_step = steps.next
@@ -10,12 +10,13 @@ export const updateFormProgress = (formType, formTypeId, steps) => {
     let formProgress = FormProgress.findOne({ 'form_type_id' : formTypeId })
     
     if (formProgress === undefined) {
-        data.user_id = Meteor.userId()
-        data.form_type = formType
-        data.form_type_id = formTypeId
-        data.created_at = new Date().getTime()
-
-        return FormProgress.insert(data)
+      data.user_id = Meteor.userId()
+      data.form_type = formType
+      data.form_type_id = formTypeId
+      data.form_id = formId
+      data.created_at = new Date().getTime()
+      
+      return FormProgress.insert(data)
     }
     
     return FormProgress.update({ 'form_type_id' : formTypeId }, { $set : data })
