@@ -11,6 +11,49 @@ export const isModerator = userId => {
     return user && user.moderator
 }
 
+// Edit Profile
+export const updateProfile = new ValidatedMethod({
+  name: 'updateProfile',
+  validate: new SimpleSchema({
+    uId: {
+      type: String,
+      optional: false
+    },
+    username: {
+      type: String,
+      optional: false
+    },
+    email: {
+      type: String,
+      optional: false
+    },
+    bio: {
+      type: String,
+      optional: false
+    }
+  }).validator({
+    clean: true
+  }),
+  run({
+    uId,
+    username,
+    email,
+    bio
+  }) {
+    Meteor.users.update({
+      _id: Meteor.userId()
+    }, {
+      $set: {
+        'username': username,
+        'profile.bio': bio,
+        'emails.0.address': email
+      }
+    }, {
+      upsert: true
+    })
+  }
+})
+
 export const updateUserStatus = new ValidatedMethod({
 	name: 'updateUserStatus',
 	validate: new SimpleSchema({

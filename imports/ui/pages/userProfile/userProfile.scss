@@ -1,0 +1,22 @@
+.user-profile {
+  position: relative;
+  padding-top: 3em;
+  .user-info{
+    padding: 1em;
+    .edit-btn{
+      position: absolute;
+      top: 0.5em;
+      right: 0.5em;
+    }
+  }
+  .user-content {
+    position: relative;
+    .card{
+      display: block;
+      padding: 1.125em;
+      i, a {
+        display: inline;
+      }
+    }
+  }
+}

@@ -1,0 +1,139 @@
+<template name="viewProfile">
+  {{#with user}}
+    <div class="container user-profile">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="card user-info">
+            <div class="media">
+                <img alt=""  height="100" width="100" class="mr-3 rounded">
+                <div class="media-body">
+                  <h4 class="mt-0"><strong>{{name}}</strong> {{#if isModerator}}<span class="badge badge-primary">moderator</span>{{/if}}</h4>
+                  <p class="h6 text-muted"><strong>About</strong></p>
+                  <p style="font-size: 0.75em">{{bio}}</p>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active border-0 mb-1 bg-transparent pl-1" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
+                <i class="fas fa-chart-line"></i>&nbsp; {{#if ownProfile}}Your Content{{else}}{{user.name}}'s Activity{{/if}}
+              </a>
+            </li>
+          </ul>
+          <div class="card-body">
+              <h2>Project Appraisal System's Applications</h2>
+              {{#if projectquestions}}
+                <table class="table table-responsive-sm table-hover table-outline mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Application ID</th>
+                            <th>Author</th>
+                            <th>Created</th>
+                            <th>Updated</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each projectquestions}}
+                        <tr class="documents-index-item {{#if isCreatorModerator createdBy}} bg-secondary {{/if}}" >
+                            <td scope="row">{{id}}</td>
+                            <td scope="row">{{#if isCreatorModerator createdBy}} <i class="fas fa-user-cog" title="Moderator"></i> {{/if}} {{author createdBy}}</td>
+                            <td scope="row">{{formatDate progress.created_at}}</td>
+                            <td scope="row">{{formatDate progress.updated_at}}</td>
+                            <td scope="row">
+                                {{#with formatProgressStatus progress.status}}
+                                    <span class="badge badge-pill badge-{{klass}}">{{status}}</span>
+                                {{/with}}
+                            </td>
+                            <td scope="row">
+                                {{#with formatProgressStatus progress.status _id createdBy}}
+                                  {{#if canSee}}
+                                    <a class="btn btn-sm btn-{{klass}}" href="/applications/{{id}}/{{path}}"  role="button">{{text}}</a> 
+                                  {{/if}}
+                                {{/with}}
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+              {{else}}
+                <table class="table table-responsive-sm table-hover table-outline mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Application ID</th>
+                            <th>Author</th>
+                            <th>Created</th>
+                            <th>Updated</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="documents-index-item" >
+                            <td scope="row" colspan="6"  style="text-align: center;">No Record Found</td>
+                        </tr>
+                    </tbody>
+                </table>
+              {{/if}}
+              <br />
+              <h2>User Information</h2>
+              {{#if userInfo}}
+                <table class="table table-responsive-sm table-hover table-outline mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Info ID</th>
+                            <th>Created</th>
+                            <th>Updated</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#with userInfo}}
+                        <tr class="documents-index-item" >
+                            <td scope="row">{{_id}}</td>
+                            <td scope="row">{{formatDate createdAt}}</td>
+                            <td scope="row">{{formatDate updatedAt}}</td>
+                            <td scope="row">
+                                {{#with formatProgressStatus progress.status}}
+                                    <span class="badge badge-pill badge-{{klass}}">{{status}}</span>
+                                {{/with}}
+                            </td>
+                            <td scope="row">
+                                {{#with formatProgressStatus progress.status _id createdBy}}
+                                    <a class="btn btn-sm btn-{{klass}}" href="/userInfo/{{id}}/{{path}}"  role="button">{{text}}</a>
+                                {{/with}}
+                            </td>
+                        </tr>
+                        {{/with}}
+                    </tbody>
+                </table>
+              {{else}}
+                <table class="table table-responsive-sm table-hover table-outline mb-0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Info ID</th>
+                            <th>Created</th>
+                            <th>Updated</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="documents-index-item" >
+                            <td scope="row" colspan="5" style="text-align: center;">No Record Found</td>
+                        </tr>
+                    </tbody>
+                </table>
+              {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+  {{/with}}
+</template>
