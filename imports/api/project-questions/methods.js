@@ -111,18 +111,55 @@ export const removeProjectQuestions = new ValidatedMethod({
 
 if (Meteor.isDevelopment) {
     Meteor.methods({
+    	generateTestApplication: () => {
+    		return ProjectQuestions.insert({
+    			problem_description: 'test',
+	            possible_solution: 'Test solution',
+	            proposed_solution: 'Test solution 2',
+	            attempted_solution: 'Test solution 3',
+	            is_solvable_by_traditional_db: 'Yes',
+	            blockchain_use_reason: 'Test reason',
+	            blockchain_requirement_reason: 'Test reason 2',
+	            blockchain_solution_proposal: 'Test proposal',
+	            ada_blockchain_aspects: 'Test ada',
+	            target_market_size: 'Test market size',
+	            target_market_regions: 'Test market regions',
+	            competitors: 'Test competitors',
+	            target_audience: 'Test audience',
+	            prototype: 'Test prototype',
+	            source_code_url: 'Test source code URL',
+	            development_roadmap: 'Test roadmap',
+	            project_website: 'Test website',
+	            business_plan: 'Test business plan',
+	            disruptive_solution_reason: 'Test reason 5',
+	            user_onboarding_process: 'User onboarding test',
+	            project_token_type: 'Test token type',
+	            unfair_advantage_reason: 'Test reason 6',
+	            team_members: [{
+	                name: 'Test user 1',
+	                email: 'test@test.com'
+	            }, {
+	                name: 'Test user 2',
+	                email: 'test2@test.com'
+	            }],
+	            id: 1,
+	            eloRanking: 400
+    		})
+    	},
         removeTestApplication: () => {
-            let pq = ProjectQuestions.findOne({
+            let pq = ProjectQuestions.find({
                 problem_description: 'test'
-            })
+            }).fetch()
 
-            if (pq) {
-            	ProjectQuestions.remove({
-            		_id: pq._id
-            	})
+            if (pq && pq.length) {
+            	pq.forEach(i => {
+	            	ProjectQuestions.remove({
+	            		_id: i._id
+	            	})
 
-            	FormProgress.remove({
-            		form_type_id: pq._id
+	            	FormProgress.remove({
+	            		form_type_id: i._id
+	            	})
             	})
             }
         }

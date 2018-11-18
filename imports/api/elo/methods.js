@@ -18,7 +18,7 @@ export const tabulateElo = new ValidatedMethod({
         //Initiate elo ranking at 400
         let applications = ProjectQuestions.find({}).fetch()
 
-        const excludedKeys = ['eloRanking', 'createdAt', 'createdBy', 'team_members']
+        const excludedKeys = ['eloRanking', 'createdAt', 'createdBy', 'team_members', 'id']
         let questions = ProjectQuestions.schema.objectKeys().filter(i => !~excludedKeys.indexOf(i))
 
         applications.forEach(application => {

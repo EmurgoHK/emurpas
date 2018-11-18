@@ -12,7 +12,7 @@ describe('form progress methods', () => {
     it('can track new user form progress', () => {
         var progress = FormProgress.find({}).fetch()
 
-        updateFormProgress('test', 'new', {last: '1', next: '2', final: false})
+        updateFormProgress('test', 'test', 'new', {last: '1', next: '2', final: false})
         progress = FormProgress.findOne({form_type: 'test'})
         assert.ok(progress)
         assert.propertyVal(progress, 'status', 'in-progress');
@@ -21,13 +21,13 @@ describe('form progress methods', () => {
     })
 
     it('can update tracked form progress', () => {
-        updateFormProgress('test', 'updated', {last: '1', next: '2', final: false})
+        updateFormProgress('test', 'updated', 'test',  {last: '1', next: '2', final: false})
         var progress = FormProgress.findOne({ 'form_type_id' : 'updated' })
         assert.ok(progress)
         assert.propertyVal(progress, 'status', 'in-progress');
         assert.propertyVal(progress, 'user_id', Meteor.userId());
 
-        updateFormProgress(progress.form_type, progress.form_type_id, {last: '2', next: '3', final: true})
+        updateFormProgress(progress.form_type, progress.form_type_id, 'test', {last: '2', next: '3', final: true})
         progress = FormProgress.findOne({ 'form_type_id' : progress.form_type_id })
         assert.propertyVal(progress, 'last_step', '2');
         assert.propertyVal(progress, 'next_step', '3');
