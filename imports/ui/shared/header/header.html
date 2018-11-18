@@ -34,7 +34,11 @@
         </a>
       </li>
       <a class="nav-link dropdown-toggle" href="#" id="dropdownMenu2" data-toggle="dropdown" aria-expanded="true">
-        {{currentUser.username}}
+        {{#if currentUser.username}}
+          {{currentUser.username}}
+         {{else}}
+            UserName
+         {{/if}}
       </a>
       <!-- TODO : For Smaller Screen, use this later if more setting options are added -->
       <!-- <a class="nav-link dropdown-toggle d-block d-sm-none" data-toggle="dropdown" aria-expanded="false">
@@ -44,7 +48,14 @@
         <div class="dropdown-header text-center">
           <strong>Account</strong>
         </div>
+        <a class="dropdown-item" href="/profile/{{userId}}"><i class="nav-icon icon-user"></i> My Profile</a>
+        <a class="dropdown-item" href="/profile/{{userId}}/edit"><i class="nav-icon icon-settings"></i> Edit Profile</a>
         <a class="dropdown-item" id="signOut" style="cursor: pointer;"><i class="nav-icon icon-logout"></i> Sign out</a>
+      </div>
+      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
+        <div class="dropdown-header text-center">
+          <strong>Account</strong>
+        </div>
       </div>
       {{ else }}
       <li class="nav-item">

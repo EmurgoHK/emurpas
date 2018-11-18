@@ -11,6 +11,7 @@ import '/imports/ui/pages/applications/new'
 import '/imports/ui/pages/applications/viewApplication'
 import '/imports/ui/pages/login/login'
 import '/imports/ui/pages/signup/signup'
+import '/imports/ui/pages/userProfile/userProfile'
 import '/imports/ui/pages/example/example'
 import '/imports/ui/pages/not-found/not-found'
 
@@ -132,6 +133,28 @@ FlowRouter.route('/signup', {
 		  main: 'signup'
 	  })
 	}
+})
+
+FlowRouter.route('/profile/:userId', {
+    name: 'viewProfile',
+    action: () => {
+        BlazeLayout.render('App_body', {
+          header: 'header',
+		  sidebar: 'sidebar',
+		  main: 'viewProfile'
+        })
+    }
+})
+
+FlowRouter.route('/profile/:userId/edit', {
+    name: 'editProfile',
+    action: () => {
+        BlazeLayout.render('App_body', {
+          header: 'header',
+		  sidebar: 'sidebar',
+		  main: 'editProfile'
+        })
+    }
 })
 
 FlowRouter.route('/example', {

@@ -38,5 +38,6 @@ Template.header.helpers({
         $exists: false
       }
     }]
-  }).count()
+  }).count(),
+  userId : () => Meteor.userId()
 })
