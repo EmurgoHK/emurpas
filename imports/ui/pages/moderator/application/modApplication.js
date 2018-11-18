@@ -16,6 +16,7 @@ import { EloRankings } from '/imports/api/elo/eloRankings'
 import { removeProjectQuestions } from '/imports/api/project-questions/methods'
 import { rateQuestion } from '/imports/api/question-rating/methods'
 import { delegateQuestion, revokeDelegation } from '/imports/api/delegates/methods'
+import { calculateFormRating } from '/imports/api/form-progress/methods'
 
 import swal from 'sweetalert'
 import { notify } from '/imports/modules/notifier'
@@ -24,6 +25,8 @@ const MAX_RATING = 10
 
 Template.modApplication.onCreated(function() {
     window.testingComments = Comments 
+
+
     
     this.autorun(() => {
         this.subscribe('modProjectQuestions')
@@ -40,6 +43,7 @@ Template.modApplication.onCreated(function() {
 
     this.autorun(() => {
         let ids = [FlowRouter.getParam('id')]
+
 
         // find the other application
         let appIds = ProjectQuestions.find({
@@ -71,10 +75,23 @@ Template.modApplication.onCreated(function() {
         this.subscribe('elo', ids)
     })
 
+                //calculate the weight of the application, this is done on 
+                // creation by will do it on view as well for legacy applicaitons
+                calculateFormRating.call({
+                    applicationId: FlowRouter.getParam('id')
+                }, (err, data) => {
+
+                    if (err) {
+                        console.error(err)
+                    }
+                })
+
     this.message = new ReactiveDict()
     this.reply = new ReactiveDict()
     this.show = new ReactiveDict()
     this.delegates = new ReactiveDict()
+
+
 })
 
 Template.modApplication.helpers({

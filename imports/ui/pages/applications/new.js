@@ -6,6 +6,8 @@ import { FlowRouter } from 'meteor/kadira:flow-router'
 import { ProjectQuestions } from '/imports/api/project-questions/project-questions'
 import { FormProgress } from '/imports/api/form-progress/form-progress'
 import { saveProjectQuestions } from '/imports/api/project-questions/methods'
+import { calculateFormRating } from '/imports/api/form-progress/methods'
+
 // import { AutoForm } from 'meteor/aldeed:autoform'
 import { notify } from '/imports/modules/notifier'
 import swal from 'sweetalert'
@@ -183,34 +185,44 @@ Template.newApplication.events({
 			final: $(event.target).find('.wizard-submit-button').length >= 1,
 		};
 
-		saveProjectQuestions.call({ projectID: projectID, data: wizard.mergedData(), steps: steps}, (err, resp) => {
-			if (!err) {
-				if (projectID !== resp) FlowRouter.setParams({projectID: resp});
+		saveProjectQuestions.call({ projectID: projectID, data: wizard.mergedData(), steps: steps }, (err, resp) => {
+	    if (!err) {
+	        if (projectID !== resp) FlowRouter.setParams({ projectID: resp });
 
-				if (steps.final) {
-					tpl.wizard.clearData();
-					tpl.wizard.destroy();
-					FlowRouter.go('/');
-					
-					swal({
-						text: `Application has been received! You will now be directed to answer questions about yourself.`,
-						icon: 'success',
-						buttons: {
-								confirm: {
-										text: 'OK',
-										value: true,
-										visible: true,
-										closeModal: true
-								}
-						}
-					}).then(confirmed => {
-						FlowRouter.go('/userInfo')
-					});
-				}
-			} else {
-				AutoForm.getValidationContext(formId).addValidationErrors([err])
-			}
-		});
+	        if (steps.final) {
+	            tpl.wizard.clearData();
+	            tpl.wizard.destroy();
+	            FlowRouter.go('/');
+
+	            // Calculate the weight of the application when saved
+	            calculateFormRating.call({
+	                applicationId: projectID
+	            }, (err, data) => {
+
+	                if (err) {
+	                    console.error(err)
+	                }
+	            })
+
+	            swal({
+	                text: `Application has been received! You will now be directed to answer questions about yourself.`,
+	                icon: 'success',
+	                buttons: {
+	                    confirm: {
+	                        text: 'OK',
+	                        value: true,
+	                        visible: true,
+	                        closeModal: true
+	                    }
+	                }
+	            }).then(confirmed => {
+	                FlowRouter.go('/userInfo')
+	            });
+	        }
+	    } else {
+	        AutoForm.getValidationContext(formId).addValidationErrors([err])
+	    }
+	});
 	},
 	'change input[type=radio][name=is_solvable_by_traditional_db]' (event, _tpl) {
 		event.preventDefault()
