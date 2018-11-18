@@ -76,6 +76,11 @@ Template.modApplications.helpers({
             _id: this.form_type_id
         }) || {}).eloRanking || '-'
     },
+    applicationWeight: function() {
+     return (ProjectQuestions.findOne({
+         _id: this.form_type_id
+     }) || {}).applicationWeight || '-'
+    },
     author: (userId) => {
         let user = Meteor.users.findOne({ _id: userId }) || {}
         return ((user.emails || [])[0] || {}).address

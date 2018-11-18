@@ -19,6 +19,7 @@
                                             <th>Created</th>
                                             <th>Updated</th>
                                             <th>ELO</th>
+                                            <th>Weight</th>
                                             <th></th>
                                             <th></th>
                                         </tr>
@@ -32,6 +33,7 @@
                                             <td scope="row">{{formatDate created_at}}</td>
                                             <td scope="row">{{formatDate updated_at}}</td>
                                             <td scope="row">{{eloRanking}}</td>
+                                            <td scope="row">{{applicationWeight}}</td>
                                             <td scope="row">
                                                 {{#if isInProgress status}}
                                                     <i title="In progress" class="icon-clock"></i>

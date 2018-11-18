@@ -9,6 +9,7 @@ import { FormProgress } from '../form-progress/form-progress'
 import { isModerator } from '/imports/api/user/methods'
 
 import { sendNotification } from '/imports/api/notifications/methods'
+import { calculateFormRating } from '/imports/api/form-progress/methods'
 
 SimpleSchema.extendOptions(['autoform'])
 
@@ -64,23 +65,24 @@ export const notifyApplication = (type, resId, fieldId, text) => {
 }
 
 export const saveProjectQuestions = new ValidatedMethod({
-  name: 'saveProjectQuestions',
-  validate (_params) { },
-  run({ projectID, data, steps }) {
-    if (Meteor.isServer) {
-      if (Meteor.userId()) {
-        if (projectID === 'new') {
-          data.id = uniqueIndex('application')
-          projectID = ProjectQuestions.insert(data, {validate: false})   
-        } else {
-          ProjectQuestions.update({ '_id' : projectID }, { $set : data })
+    name: 'saveProjectQuestions',
+    validate(_params) {},
+    run({ projectID, data, steps }) {
+        if (Meteor.isServer) {
+            if (Meteor.userId()) {
+                if (projectID === 'new') {
+                    data.id = uniqueIndex('application')
+                    projectID = ProjectQuestions.insert(data, { validate: false })
+                } else {
+                    ProjectQuestions.update({ '_id': projectID }, { $set: data })
+                }
+                let formId = data.id
+                updateFormProgress('project', projectID, formId, steps)
+
+                return projectID
+            }
         }
-        let formId = data.id
-        updateFormProgress('project', projectID, formId, steps)
-        return projectID
-      }
     }
-  }
 })
 
 export const removeProjectQuestions = new ValidatedMethod({
