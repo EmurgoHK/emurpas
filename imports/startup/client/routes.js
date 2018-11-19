@@ -37,6 +37,10 @@ const userLoginFilter = (context, redirect, _stop) => {
 		redirect('/login')
 	}
 }
+function scrollToTop(context, redirect) {
+	console.log('scroll to top')
+    $(window).scrollTop(0);
+}
 
 const modRoutes = FlowRouter.group({
 	prefix: '/moderator',
@@ -48,7 +52,7 @@ Accounts.onLogout((user) => {
 	FlowRouter.redirect('/');
 })
 
-FlowRouter.triggers.enter([userLoginFilter], { except: ['App.home'] })
+FlowRouter.triggers.enter([userLoginFilter,scrollToTop], { except: ['App.home'] })
 
 // Set up all routes in the app
 FlowRouter.route('/', {
