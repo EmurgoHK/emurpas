@@ -9,6 +9,9 @@ import '/imports/ui/pages/userInfo/userInfo'
 import '/imports/ui/pages/userInfo/viewUserInfo'
 import '/imports/ui/pages/applications/new'
 import '/imports/ui/pages/applications/viewApplication'
+import '/imports/ui/pages/contact/contact'
+import '/imports/ui/pages/contact/viewContact'
+import '/imports/ui/pages/contact/newContact'
 import '/imports/ui/pages/login/login'
 import '/imports/ui/pages/signup/signup'
 import '/imports/ui/pages/userProfile/userProfile'
@@ -74,6 +77,39 @@ FlowRouter.route('/userInfo/:userInfoID?', {
     		main: 'userInfo'
     	})
   	}
+})
+
+FlowRouter.route('/contact', {
+	name: 'contact',
+	action: () => {
+	  	BlazeLayout.render('App_body', {
+		  	header: 'header',
+		  	sidebar: 'sidebar',
+		  	main: 'contact'
+	  	})
+	}
+})
+
+FlowRouter.route('/contact/new', {
+	name: 'newContact',
+	action: () => {
+	  	BlazeLayout.render('App_body', {
+		  	header: 'header',
+		  	sidebar: 'sidebar',
+		  	main: 'newContact'
+	  	})
+	}
+})
+
+FlowRouter.route('/contact/view/:id', {
+	name: 'viewContact',
+	action: () => {
+	  	BlazeLayout.render('App_body', {
+		  	header: 'header',
+		  	sidebar: 'sidebar',
+		  	main: 'viewContact'
+	  	})
+	}
 })
 
 FlowRouter.route('/applications/:projectID?', {

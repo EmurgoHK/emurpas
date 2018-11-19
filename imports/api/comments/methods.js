@@ -7,10 +7,13 @@ import { Comments } from './comments'
 import { isModerator } from '/imports/api/user/methods'
 
 import { notifyApplication } from '/imports/api/project-questions/methods'
+import { notifyContact } from '/imports/api/contact/methods'
 
-const notify = (type, resId, fieldId, text) => {
+const notify = (type, resId, fieldId, text, userId) => {
     if (type === 'question') {
         notifyApplication(type, resId, fieldId, text)
+    } else if (type === 'answer') {
+        notifyContact(type, resId, text, userId)
     }
 }
 
@@ -62,7 +65,7 @@ export const newComment = new ValidatedMethod({
         }
 
         try {
-            notify(type, resourceId, fieldId, text)
+            notify(type, resourceId, fieldId, text, Meteor.userId())
         } catch (e) {}
         
         return Comments.insert({

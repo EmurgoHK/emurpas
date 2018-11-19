@@ -1,0 +1,33 @@
+<template name="newContact">
+    <div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="card">
+					<div class="card-header">
+						Contact form
+					</div>
+					<div class="card-body">
+						<form class="contactForm">
+          					<div class="group-title">Title</div>
+          					<div class="input-group">
+            					<input type="text" class="form-control" id="title" placeholder="Title in 100 characters or less">
+            					<div id="titleError" class="invalid-feedback"></div>
+          					</div>
+          					<small><i id="title-chars" class="text-muted"></i></small>
+          					<div class="group-title">Body</div>
+          					<div class="input-group">
+            					<textarea class="form-control" id="body" rows="6" placeholder="Explain your problem or question in detail"></textarea>
+            					<div id="bodyError" class="invalid-feedback"></div>
+          					</div>
+          				</form>
+					</div>
+					<div class="card-footer">
+				        <div>
+				          	<button type="submit" class="btn btn-lg btn-success new-contact">Submit</button>
+				        </div>
+				    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
