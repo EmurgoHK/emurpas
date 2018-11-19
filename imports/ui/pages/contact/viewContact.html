@@ -1,0 +1,63 @@
+<template name="viewContact">
+    <div class="container-fluid">
+        <div class="card">
+            {{#with contact}}
+            <div class="card-header">
+                {{#with formatStatus status}}
+                    <span class="badge badge-pill badge-{{klass}}">{{status}}</span>
+                {{/with}}
+                {{title}}
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{body}}</p>
+                <div class="float-left">
+                {{#if isOpen}}
+                    {{#if isAuthor}}<a href="#" class="btn btn-outline-success change-status" data-status="resolved">Mark as resolved</a>{{/if}}
+                    <a href="#" class="btn btn-outline-danger change-status" data-status="closed">Close</a>
+                {{else}}
+                    <a href="#" class="btn btn-outline-primary change-status" data-status="open">Reopen</a>
+                {{/if}}
+                </div>
+                {{#unless showReply}}
+                <div class="float-right">
+                    <a href="#" class="btn btn-outline-primary comment-new">Comment</a>
+                </div>
+                {{/unless}}
+
+                <br /><hr>
+
+                {{#if showReply}}
+                <div class="row">
+                    <div class="col-sm-12 news-form">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <textarea class="form-control" id="comments" name="comment" rows="3" placeholder="Markdown is supported..." required></textarea>
+                                </div>
+
+                                <p class="text-danger">{{commentInvalidMessage}}</p>
+
+                                <div class="btn-group" role="group">
+                                    <div class="btn-group" role="group">
+                                        <button type="submit" class="btn btn-outline-primary mb-2 new-comment">Comment</button>
+                                        <button type="submit" class="btn btn-outline-danger mb-2 cancel-new">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+
+                <div class="row">
+                    <div class="col-sm-12 news-form comments">
+                        {{#each comments}}
+                            {{> commentBody ident=0 comment=this _id=../_id type=type}}
+                        {{/each}}
+                    </div>
+                </div>                         
+            </div>
+            {{/with}}
+        </div>
+    </div>
+</template>

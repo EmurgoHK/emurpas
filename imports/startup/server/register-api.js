@@ -35,3 +35,7 @@ import '/imports/api/delegates/server/publications'
 import '/imports/api/elo/methods'
 import '/imports/api/elo/server/startup'
 import '/imports/api/elo/server/publications'
+
+// contact api
+import '/imports/api/contact/methods'
+import '/imports/api/contact/server/publications'

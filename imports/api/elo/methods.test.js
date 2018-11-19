@@ -49,7 +49,8 @@ describe('elo methods', () => {
                 email: 'test2@test.com'
             }],
             id: 1,
-            eloRanking: 400
+            eloRanking: 400,
+            applicationWeight: '2'
         }
 
         for (let i = 0; i < 2; i++) {

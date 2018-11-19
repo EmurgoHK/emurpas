@@ -249,7 +249,8 @@ ProjectQuestions.schema = new SimpleSchema({
         label: 'Does your team have an "unfair" advantage?'
     },
     applicationWeight: {
-        type: String
+        type: String,
+        optional: true
     },
     team_members: {
         type: Array
