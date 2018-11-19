@@ -38,7 +38,6 @@ const userLoginFilter = (context, redirect, _stop) => {
 	}
 }
 function scrollToTop(context, redirect) {
-	console.log('scroll to top')
     $(window).scrollTop(0);
 }
 
