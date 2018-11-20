@@ -35,17 +35,14 @@ export const newContact = new ValidatedMethod({
             clean: true
         }),
     run({ title, body }) {
-		if (!Meteor.userId()) {
-			throw new Meteor.Error('Error.', 'You have to be logged in.')
-        }
-
-        return Contact.insert({
+        let insertContactObj = {
             title: title,
             body: body,
-            createdBy: Meteor.userId(),
+            createdBy: Meteor.userId() || '',
             createdAt: new Date().getTime(),
             status: 'open'
-        })
+        }
+        return Contact.insert(insertContactObj)
     }
 })
 

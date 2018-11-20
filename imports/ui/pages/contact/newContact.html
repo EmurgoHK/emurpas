@@ -14,7 +14,12 @@
             					<div id="titleError" class="invalid-feedback"></div>
           					</div>
           					<small><i id="title-chars" class="text-muted"></i></small>
-          					<div class="group-title">Body</div>
+          					<br>
+          					<div class="group-title">Body 
+          						{{#if isNotLoggedIn}}
+          						<span class="contact-note">*If issue related login then please mention email in description.</span>
+          						{{/if}}
+          					</div>
           					<div class="input-group">
             					<textarea class="form-control" id="body" rows="6" placeholder="Explain your problem or question in detail"></textarea>
             					<div id="bodyError" class="invalid-feedback"></div>
