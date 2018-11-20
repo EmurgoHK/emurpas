@@ -13,6 +13,12 @@ const maxCharValue = (inputId) => {
     	return 100
   	}
 }
+Template.newContact.helpers({
+	isNotLoggedIn: function() {
+		let flag = Meteor.userId() ? false : true;
+    	return flag;
+    },
+})
 
 Template.newContact.events({
 	'keyup #title': (event, templateInstance) => {
@@ -44,9 +50,7 @@ Template.newContact.events({
 	    }, (err, data) => {
 	    	if (!err) {
 	    		notify('Your request has been saved.', 'success')
-
 	        	FlowRouter.go('/contact')
-
 	        	return
 	      	}
 

@@ -24,7 +24,8 @@ import '/imports/ui/pages/moderator/users/modUsers'
 
 const userLoginFilter = (context, redirect, _stop) => {
 	let oldRoute = '/'
-	let authRoutes = ['/login', '/signup']
+	let authRoutes = ['/login', '/signup'];
+	let withoutLoginAccess = ['/contact', '/contact/new'];
 
 	if (context.oldRoute !== undefined) {
 		oldRoute = context.oldRoute.path
@@ -35,7 +36,9 @@ const userLoginFilter = (context, redirect, _stop) => {
 		redirect(oldRoute)
 	}
 
-	if (!Meteor.userId() && !authRoutes.includes(context.path)) {
+	if(!Meteor.userId() && withoutLoginAccess.includes(context.path)){
+
+	} else if (!Meteor.userId() && !authRoutes.includes(context.path)) {
 		notify("Login to continue!", "error")
 		redirect('/login')
 	}
