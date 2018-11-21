@@ -109,8 +109,10 @@ export const averageElo = new ValidatedMethod({
                     let sum = _.reduce(ratingArray, (memo, num) => memo + num, 0)
 
                     final = Math.floor(sum / (ratings.length))
-
-                    ProjectQuestions.update({
+                // Add 'upsert' instead of 'update'
+		// These function call every 10 second. 
+		// Not sure why update fail for single fields. - Gunjan Patel 
+		ProjectQuestions.upsert({
                         _id: i._id
                     }, {
                         $set: {
