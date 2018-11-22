@@ -165,7 +165,12 @@ Template.newApplication.events({
 			}
 		});	
 	},
-
+	/*
+		when click on back-button using default js function scroll to top.
+	 */
+	'click .wizard-back-button' (event, _tpl) {
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	},
 	'submit' (event, tpl) {
 		event.preventDefault();
 		const formGroup = $(event.target).closest('.form-group');
@@ -184,6 +189,8 @@ Template.newApplication.events({
 			next: activeStep.id,
 			final: $(event.target).find('.wizard-submit-button').length >= 1,
 		};
+		// When single step submitted, srcoll to top using following.
+		window.scrollTo({ top: 0, behavior: 'smooth' });
 
 		saveProjectQuestions.call({ projectID: projectID, data: wizard.mergedData(), steps: steps }, (err, resp) => {
 	    if (!err) {
