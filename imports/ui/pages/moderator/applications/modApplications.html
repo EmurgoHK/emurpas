@@ -12,8 +12,37 @@
                     </div>
                     <div class="card-body">
                         <input type="text" class="form-control search" placeholder="Type to start searching...">
+                        <div class="float-left">
+                            {{#if filterBy 'in-progress'}}
+                            <input type="checkbox" class="filter" id="in-progress" checked><label for="in-progress" class="btn btn-link p-1"> In progress </label>
+                            {{else}}
+                            <input type="checkbox" class="filter" id="in-progress"><label for="in-progress" class="btn btn-link p-1"> In progress </label>
+                            {{/if}}
+                            {{#if filterBy 'completed'}}
+                            <input type="checkbox" class="filter" id="completed" checked><label for="completed" class="btn btn-link p-1"> Completed </label>
+                            {{else}}
+                            <input type="checkbox" class="filter" id="completed"><label for="completed" class="btn btn-link p-1"> Completed </label>
+                            {{/if}}
+                        </div>
+                        <div class="float-right">
+                            <button class="btn btn-link sort" data-by="num">
+                                Application # {{#if sortBy 'num-desc'}} <i class="fas fa-sort-down"></i> {{else}} {{#if sortBy 'num-asc'}} <i class="fas fa-sort-up"></i> {{/if}} {{/if}}
+                            </button>
+                            <button class="btn btn-link sort" data-by="date">
+                                Date {{#if sortBy 'date-desc'}} <i class="fas fa-sort-down"></i> {{else}} {{#if sortBy 'date-asc'}} <i class="fas fa-sort-up"></i> {{/if}} {{/if}}
+                            </button>
+                            <button class="btn btn-link sort" data-by="weight">
+                                Weight {{#if sortBy 'weight-desc'}} <i class="fas fa-sort-down"></i> {{else}} {{#if sortBy 'weight-asc'}} <i class="fas fa-sort-up"></i> {{/if}} {{/if}}
+                            </button>
+                            <button class="btn btn-link sort" data-by="status">
+                                Status {{#if sortBy 'status-desc'}} <i class="fas fa-sort-down"></i> {{else}} {{#if sortBy 'status-asc'}} <i class="fas fa-sort-up"></i> {{/if}} {{/if}}
+                            </button>
+                            <button class="btn btn-link sort" data-by="elo">
+                                ELO {{#if sortBy 'elo-desc'}} <i class="fas fa-sort-down"></i> {{else}} {{#if sortBy 'elo-asc'}} <i class="fas fa-sort-up"></i> {{/if}} {{/if}}
+                            </button>
+                        </div>
                         <br />
-                        {{#if formProgress.count}}
+                        {{#if formProgress.length}}
                             <table class="table table-responsive-sm table-hover table-outline mb-0">
                                     <thead class="thead-light">
                                         <tr>
@@ -32,25 +61,25 @@
                                         {{#each formProgress}}
                                         <tr class="documents-index-item">
                                             <!-- Check for old entiries which doesn't kave form_id -->
-                                            <td scope="row">{{#if form_id}} {{form_id}} {{else}} {{form_type_id}} {{/if}}</td>
-                                            <td scope="row">{{author user_id}}</td>
-                                            <td scope="row">{{formatDate created_at}}</td>
-                                            <td scope="row">{{formatDate updated_at}}</td>
+                                            <td scope="row">{{#if id}} {{id}} {{else}} {{_id}} {{/if}}</td>
+                                            <td scope="row">{{author createdBy}}</td>
+                                            <td scope="row">{{formatDate createdAt}}</td>
+                                            <td scope="row">{{formatDate progress.updated_at}}</td>
                                             <td scope="row">{{eloRanking}}</td>
                                             <td scope="row">{{applicationWeight}}</td>
                                             <td scope="row">
                                                 {{chart}}
-                                                <canvas id="{{form_type_id}}_chart" width="100" height="50"></canvas></td>
+                                                <canvas id="{{_id}}_chart" width="100" height="50"></canvas></td>
                                                 
                                             <td scope="row">
-                                                {{#if isInProgress status}}
+                                                {{#if isInProgress progress.status}}
                                                     <i title="In progress" class="icon-clock"></i>
                                                 {{else}}
                                                     <span class="badge badge-success">completed</span>
                                                 {{/if}}
                                             </td>
                                             <td scope="row">
-                                                <a class="btn btn-sm btn-secondary" href="/moderator/application/{{form_type_id}}" role="button">View</a>
+                                                <a class="btn btn-sm btn-secondary" href="/moderator/application/{{_id}}" role="button">View</a>
                                             </td>
                                         </tr>
                                         {{/each}}
