@@ -112,7 +112,9 @@ export const averageElo = new ValidatedMethod({
                 // Add 'upsert' instead of 'update'
 		// These function call every 10 second. 
 		// Not sure why update fail for single fields. - Gunjan Patel 
-		ProjectQuestions.upsert({
+
+                    // actually upsert fails, update doesn't
+		            ProjectQuestions.update({
                         _id: i._id
                     }, {
                         $set: {
