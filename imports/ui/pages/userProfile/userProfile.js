@@ -29,7 +29,7 @@ Template.viewProfile.helpers({
       return {
         id : user._id,
         name : user.username ? user.username : 'No Name',
-        bio : user.profile.bio ? user.profile.bio : '',
+        bio : user.profile ? user.profile.bio : '',
         emails: user.emails
       }
     }
