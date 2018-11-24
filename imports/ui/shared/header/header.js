@@ -28,6 +28,12 @@ Template.header.events({
 })
 
 Template.header.helpers({
+    profileReady() {
+        let profile = Meteor.user().profile ? Meteor.user().profile.bio : null
+        if (profile) {
+            return true;
+        }
+    },
   notificationsCount: () => Notifications.find({
     userId: Meteor.userId(),
     read: false,
