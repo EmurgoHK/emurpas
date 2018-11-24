@@ -66,7 +66,7 @@
                                             <td scope="row">{{formatDate createdAt}}</td>
                                             <td scope="row">{{formatDate progress.updated_at}}</td>
                                             <td scope="row">{{eloRanking}}</td>
-                                            <td scope="row">{{applicationWeight}}</td>
+                                            <td scope="row"><i class="fas fa-circle" style="color:{{applicationWeight.color}}" data-toggle="tooltip" data-placement="right" title="{{applicationWeight.data}}"></i></td>
                                             <td scope="row">
                                                 {{chart}}
                                                 <canvas id="{{_id}}_chart" width="100" height="50"></canvas></td>

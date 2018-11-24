@@ -22,6 +22,14 @@ Template.modApplications.onCreated(function() {
     this.filter = new ReactiveVar(['completed', 'in-progress'])
 })
 
+Template.modApplications.onRendered(function() {
+    //init tooltips on weight icons
+    setTimeout(() => {
+        $('[data-toggle="tooltip"]').tooltip()
+    }, 0)
+
+});
+
 //chart to generate the sparkline graphs for the applicatin weight distribution
 generateChart = function(id, data) {
     let chartElement = id + '_chart'
@@ -139,7 +147,17 @@ Template.modApplications.helpers({
         return this.eloRanking || '-'
     },
     applicationWeight: function() {
-        return this.applicationWeight || '-'
+        let weight = this.applicationWeight;
+
+//we may need to tweak these numbers a little once we start to see the average weights on applications
+        if (weight > 300) {
+            return { color: '', data: 'A lot of effort' }
+        } else if (weight > 100 && weight < 300) {
+            return { color: 'orange', data: 'An average amount of effort' }
+        } else {
+            return { color: 'green', data: 'Not as much effort as we would like' }
+        }
+
     },
     chart: function() {
         //helper to generate the data payload for the sparkline graphs, we need to count the length of each
