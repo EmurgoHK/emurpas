@@ -269,6 +269,8 @@ ProjectQuestions.schema = new SimpleSchema({
         type: String,
         label: 'Author',
         autoValue: function() {
+            if (!this.isSet) return
+
             return this.userId || 'Test author'
         },
         autoform: {
@@ -278,7 +280,11 @@ ProjectQuestions.schema = new SimpleSchema({
     createdAt: {
         type: Number,
         label: 'Created At',
-        autoValue: () => new Date().getTime(),
+        autoValue: function() {
+            if (!this.isSet) return
+
+            return new Date().getTime()
+        },
         autoform: {
             type: 'hidden'
         }
