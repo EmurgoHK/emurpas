@@ -16,6 +16,42 @@ Template.App_home.onCreated(function() {
     	if (Meteor.user() && Meteor.user().moderator){
       		FlowRouter.go('/moderator/applications')
     	}
+
+    	let user = Meteor.users.findOne({
+    		_id: Meteor.userId()
+    	})
+
+    	if (user) {
+	    	let pq = ProjectQuestions.find({
+	    		$or: [{
+	            	createdBy: Meteor.userId(),
+	          	}, {
+	            	'team_members.email': ((user.emails || [])[0] || {}).address 
+	          	}]
+	    	}).fetch().map(i => i._id)
+
+	    	let uq = UserQuestions.find({
+	    		createdBy: Meteor.userId()
+	    	}).fetch().map(i => i._id)
+
+	    	let fPq = FormProgress.findOne({
+		        form_type_id: {
+		        	$in: pq
+		        },
+		        status: 'completed'
+		    })
+
+		    let fUq = FormProgress.findOne({
+		        form_type_id: {
+		        	$in: uq
+		        },
+		        status: 'completed'
+		    })
+
+		    if (fPq && !fUq) { // force users to the userinfo page if they haven't completed it yet
+		    	FlowRouter.go('/userInfo')
+		    }
+		}
   	})
 })
 
