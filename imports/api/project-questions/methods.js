@@ -72,6 +72,11 @@ export const saveProjectQuestions = new ValidatedMethod({
             if (Meteor.userId()) {
                 if (projectID === 'new') {
                     data.id = uniqueIndex('application')
+
+                    // when Application create that time required to add userId,
+                    // createdBy. which I don't found in database.
+                    data.createdBy = Meteor.userId();
+                    
                     projectID = ProjectQuestions.insert(data, { validate: false })
                 } else {
                     ProjectQuestions.update({ '_id': projectID }, { $set: data })
