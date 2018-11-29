@@ -10,6 +10,7 @@ export const addUserInfo = new ValidatedMethod({
     run({ userInfoID, userInfo, steps}) {
         if (Meteor.isServer && Meteor.userId()) {
             if (userInfoID === 'new') {
+                userInfo.createdBy = Meteor.userId();
                 userInfoID = UserQuestions.insert(userInfo, {validate: false})
             } else {
                 UserQuestions.update({ '_id' : userInfoID }, { $set : _.extend(userInfo, { updatedAt: new Date().getTime() }) })
