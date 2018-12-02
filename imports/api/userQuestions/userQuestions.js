@@ -8,6 +8,11 @@ SimpleSchema.extendOptions(['autoform'])
 const UserQuestions = new Mongo.Collection('userQuestions')
 
 if (Meteor.isServer) {
+
+    Meteor.publish('userQuestions', function () {
+        return UserQuestions.find({});
+    });
+
     Meteor.publish('userQuestions', function (userInfoID) {
         return UserQuestions.find({ '_id' : userInfoID });
     });
