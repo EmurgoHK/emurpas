@@ -71,6 +71,9 @@ Template.viewApplication.events({
 
 Template.viewApplication.helpers({
     projectID: () => FlowRouter.getParam('projectID'),
+    projectNumber: () => (ProjectQuestions.findOne({
+        _id: FlowRouter.getParam('projectID')
+    }) || {}).id,
     project: () => {
         let schema = ProjectQuestions.schema
 
