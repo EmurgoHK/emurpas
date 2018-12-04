@@ -17,6 +17,9 @@ Template.App_home.onCreated(function() {
       		FlowRouter.go('/moderator/applications')
     	}
 
+        if (!this.subscriptionsReady())
+		  return;
+
     	let user = Meteor.users.findOne({
     		_id: Meteor.userId()
     	})
