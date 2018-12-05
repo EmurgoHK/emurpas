@@ -11,6 +11,7 @@ import { calculateFormRating } from '/imports/api/form-progress/methods'
 // import { AutoForm } from 'meteor/aldeed:autoform'
 import { notify } from '/imports/modules/notifier'
 import swal from 'sweetalert'
+import { redirectToUserInfoIfNeeded } from '../../redirectionModalHelper';
 
 const BC_REQUIRE_RSN = 'blockchain_requirement_reason';
 const BC_USE_RSN = 'blockchain_use_reason';
@@ -28,9 +29,9 @@ Template.newApplication.onCreated(function() {
         if (applicationExist) {
             FlowRouter.go('/applications/' + applicationExist.form_type_id)
         }
-    })
-
-
+	})
+	
+	redirectToUserInfoIfNeeded(this);
 })
 
 Template.newApplication.onRendered(function() {
