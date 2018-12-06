@@ -29,7 +29,7 @@ describe('New application', function () {
 
         callMethod(browser, 'generateTestUserUI');
         browser.executeAsync((done) => Meteor.loginWithPassword('testing', 'testing', done))
-        callMethod(browser, 'generateTestModerator')
+        callMethod(browser, 'generateTestModerators')
     })
 
     it('it should render correctly', () => {
@@ -148,6 +148,7 @@ describe('New application', function () {
     })
 
     it ('should show up on the moderator panel', () => {
+        browser.executeAsync((done) => Meteor.loginWithPassword('mod', 'mod', done));
         callMethod(browser, 'generateTestApplication')
 
         browser.url(`${baseUrl}/moderator/applications`);

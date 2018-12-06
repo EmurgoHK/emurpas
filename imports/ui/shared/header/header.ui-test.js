@@ -20,10 +20,15 @@ describe('Header when user isn\'t logged in', () => {
     })
 
     it('should hide sidebar when nav-bar toggler is clicked', () => {
-        browser.click('.navbar-toggler.d-lg-block')
-        browser.pause(2000)
-        assert(browser.isExisting('.sidebar'), false)
-        assert(browser.isVisible('.sidebar'), false)
+        browser.waitUntil(() => browser.getUrl() === baseUrl);
+        browser.waitForVisible('.navbar-toggler.sidebar-toggler');
+        const togglers = browser.elements('.navbar-toggler.sidebar-toggler').value
+            .filter(e => e.isVisible());
+        assert.equal(togglers.length, 1);
+        togglers[0].click();
+
+        browser.waitUntil(() => browser.isExisting('.sidebar'));
+        browser.waitUntil(() => browser.isVisible('.sidebar'));
     })
 })
 
@@ -59,10 +64,14 @@ describe('Header when user is logged in', () => {
     })
 
     it('should hide sidebar when nav-bar toggler is clicked', () => {
-        browser.click('.navbar-toggler.d-lg-block')
-        browser.pause(3000)
-        
-        assert(browser.isExisting('.sidebar'), false)
-        assert(browser.isVisible('.sidebar'), false)
+        browser.waitUntil(() => browser.getUrl() === baseUrl);
+        browser.waitForVisible('.navbar-toggler.sidebar-toggler');
+        const togglers = browser.elements('.navbar-toggler.sidebar-toggler').value
+            .filter(e => e.isVisible());
+        assert.equal(togglers.length, 1);
+        togglers[0].click();
+
+        browser.waitUntil(() => browser.isExisting('.sidebar'));
+        browser.waitUntil(() => browser.isVisible('.sidebar'));
     })
 })
