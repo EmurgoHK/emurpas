@@ -110,17 +110,9 @@ if (Meteor.isDevelopment) {
                         name: 'Tester'
                     }
                 })
-
-                Meteor.users.update({
-                    _id: uId
-                }, {
-                    $set: {
-                        moderator: true
-                    }
-                })
             }
         },
-        generateTestModerator: () => {
+        generateTestModerators: () => {
             let user = Meteor.users.findOne({
                 username: 'mod'
             })
@@ -130,6 +122,29 @@ if (Meteor.isDevelopment) {
                     username: 'mod',
                     password: 'mod',
                     email: 'mod@mod.test',
+                    profile: {
+                        name: 'Moderator'
+                    }
+                })
+
+                Meteor.users.update({
+                    _id: uId
+                }, {
+                    $set: {
+                        moderator: true
+                    }
+                })
+            }
+
+            let user2 = Meteor.users.findOne({
+                username: 'mod2'
+            })
+
+            if (!user2) {
+                let uId = Accounts.createUser({
+                    username: 'mod2',
+                    password: 'mod2',
+                    email: 'mod2@mod.test',
                     profile: {
                         name: 'Moderator'
                     }

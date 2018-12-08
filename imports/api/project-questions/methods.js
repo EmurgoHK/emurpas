@@ -119,7 +119,10 @@ export const removeProjectQuestions = new ValidatedMethod({
 if (Meteor.isDevelopment) {
     Meteor.methods({
     	generateTestApplication: () => {
-    		return ProjectQuestions.insert({
+			const index = uniqueIndex('application');
+    		const id = ProjectQuestions.insert({
+				createdBy: Meteor.users.findOne({})._id,
+				createdAt: new Date().getTime(),
     			problem_description: 'test',
 	            possible_solution: 'Test solution',
 	            proposed_solution: 'Test solution 2',
@@ -149,9 +152,16 @@ if (Meteor.isDevelopment) {
 	                name: 'Test user 2',
 	                email: 'test2@test.com'
 	            }],
-	            id: 1,
+	            id: index,
 	            eloRanking: 400
-    		})
+			});
+
+			updateFormProgress('project', id, index, {
+				last: 'Step Three',
+				next: undefined,
+				final: true,
+			});
+			return id;
     	},
         removeTestApplication: () => {
             let pq = ProjectQuestions.find({
