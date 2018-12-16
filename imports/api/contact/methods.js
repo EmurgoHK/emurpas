@@ -30,14 +30,19 @@ export const newContact = new ValidatedMethod({
             body: {
                 type: String,
                 optional: false
+            },
+            email: {
+                type: String,
+                optional: false
             }
         }).validator({
             clean: true
         }),
-    run({ title, body }) {
+    run({ title, body, email }) {
         let insertContactObj = {
             title: title,
             body: body,
+            email: email,
             createdBy: Meteor.userId() || '',
             createdAt: new Date().getTime(),
             status: 'open'

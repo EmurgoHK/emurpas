@@ -15,10 +15,13 @@
           					</div>
           					<small><i id="title-chars" class="text-muted"></i></small>
           					<br>
+          					<div class="group-title">Email</div>
+          					<div class="input-group">
+            					<input type="text" class="form-control" id="email" placeholder="Your contact email address">
+            					<div id="emailError" class="invalid-feedback"></div>
+          					</div>
+          					<br />
           					<div class="group-title">Body 
-          						{{#if isNotLoggedIn}}
-          						<span class="contact-note">*If issue related login then please mention email in description.</span>
-          						{{/if}}
           					</div>
           					<div class="input-group">
             					<textarea class="form-control" id="body" rows="6" placeholder="Explain your problem or question in detail"></textarea>

@@ -14,7 +14,8 @@ describe('contact methods', () => {
     it('user can create a new question', () => {
         return callWithPromise('newContact', {
             title: 'Test title',
-            body: 'Test body'
+            body: 'Test body',
+            email: 'ab@ab.com'
         }).then(data => {
             let contact = Contact.findOne({})
 
@@ -22,6 +23,7 @@ describe('contact methods', () => {
 
             assert.ok(contact.title === 'Test title')
             assert.ok(contact.body === 'Test body')
+            assert.ok(contact.email === 'ab@ab.com')
         })
     })
 
