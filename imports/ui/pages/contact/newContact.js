@@ -46,7 +46,8 @@ Template.newContact.events({
 
 	    newContact.call({
 	    	title: $('#title').val(),
-	    	body: $('#body').val()
+	    	body: $('#body').val(),
+	    	email: $('#email').val()
 	    }, (err, data) => {
 	    	if (!err) {
 	    		notify('Your request has been saved.', 'success')

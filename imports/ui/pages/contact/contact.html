@@ -26,6 +26,7 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th>Contact ID</th>
+                                    <th>Email</th>
                                     <th>Author</th>
                                     <th>Created</th>
                                     <th>Status</th>
@@ -37,6 +38,7 @@
                                 {{#each contact}}
                                 <tr class="documents-index-item" >
                                     <td scope="row">{{_id}}</td>
+                                    <td scope="row">{{email}}</td>
                                     <td scope="row">{{#if isCreatorModerator createdBy}} <i class="fas fa-user-cog" title="Moderator"></i> {{/if}} {{author createdBy}}</td>
                                     <td scope="row">{{formatDate createdAt}}</td>
                                     <td scope="row">
