@@ -25,7 +25,7 @@ import '/imports/ui/pages/moderator/users/modUsers'
 const userLoginFilter = (context, redirect, _stop) => {
 	let oldRoute = '/'
 	let authRoutes = ['/login', '/signup'];
-	let withoutLoginAccess = ['/contact', '/contact/new'];
+	let withoutLoginAccess = []; //['/contact', '/contact/new'];
 
 	if (context.oldRoute !== undefined) {
 		oldRoute = context.oldRoute.path
