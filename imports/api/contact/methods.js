@@ -33,7 +33,8 @@ export const newContact = new ValidatedMethod({
             },
             email: {
                 type: String,
-                optional: false
+                optional: false,
+                regEx: SimpleSchema.RegEx.Email
             }
         }).validator({
             clean: true
