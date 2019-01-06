@@ -16,7 +16,13 @@ export const tabulateElo = new ValidatedMethod({
         // each question for each currency needs an elo ranking - each question is a different game
 
         //Initiate elo ranking at 400
-        let applications = ProjectQuestions.find({}).fetch()
+        let applications = ProjectQuestions.find({
+            $or: [{
+                isInvalid: null
+            }, {
+                isInvalid : false
+            }]
+        }).fetch()
 
         const excludedKeys = ['eloRanking', 'createdAt', 'createdBy', 'team_members', 'id']
         let questions = ProjectQuestions.schema.objectKeys().filter(i => !~excludedKeys.indexOf(i))
@@ -92,7 +98,13 @@ export const averageElo = new ValidatedMethod({
     name: 'averageElo',
     validate: null,
     run({}) {        
-        let applications = ProjectQuestions.find({}).fetch()
+        let applications = ProjectQuestions.find({
+            $or: [{
+                isInvalid: null
+            }, {
+                isInvalid : false
+            }]
+        }).fetch()
 
         applications.forEach(i => {
             let ratings = EloRankings.find({
