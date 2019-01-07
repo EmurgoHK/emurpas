@@ -277,6 +277,13 @@ ProjectQuestions.schema = new SimpleSchema({
             type: 'hidden'
         }
     },
+    isInvalid: {
+        type: Boolean,
+        label: 'Is Invalid',
+        autoform: {
+            type: 'hidden'
+        }
+    },
     createdAt: {
         type: Number,
         label: 'Created At',

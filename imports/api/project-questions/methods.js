@@ -76,7 +76,7 @@ export const saveProjectQuestions = new ValidatedMethod({
                     // when Application create that time required to add userId,
                     // createdBy. which I don't found in database.
                     data.createdBy = Meteor.userId();
-                    
+                    data.isInvalid = false
                     projectID = ProjectQuestions.insert(data, { validate: false })
                 } else {
                     ProjectQuestions.update({ '_id': projectID }, { $set: data })
@@ -116,6 +116,31 @@ export const removeProjectQuestions = new ValidatedMethod({
     }
 })
 
+export const markProjectInvalid = new ValidatedMethod({
+	name: 'markProjectInvalid',
+	validate: new SimpleSchema({
+		projectId: {
+			type: String,
+			optional: false
+		}
+	}).validator({
+    	clean: true,
+    	filter: false
+    }),
+    run({ projectId }) {
+    	if (Meteor.userId()) {
+			console.log('here')
+			ProjectQuestions.update({ '_id': projectId }, { 
+				$set: {
+					isInvalid : true
+				} 
+			})
+    	} else {
+    		throw new Meteor.Error('Error', 'Insufficient permissions.')
+    	}
+    }
+})
+
 if (Meteor.isDevelopment) {
     Meteor.methods({
     	generateTestApplication: () => {
@@ -144,7 +169,8 @@ if (Meteor.isDevelopment) {
 	            disruptive_solution_reason: 'Test reason 5',
 	            user_onboarding_process: 'User onboarding test',
 	            project_token_type: 'Test token type',
-	            unfair_advantage_reason: 'Test reason 6',
+				unfair_advantage_reason: 'Test reason 6',
+				isInvalid: false,
 	            team_members: [{
 	                name: 'Test user 1',
 	                email: 'test@test.com'

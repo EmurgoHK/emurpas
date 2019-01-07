@@ -58,6 +58,18 @@ describe('project questions methods', () => {
             })
         })
     })
+    
+    it ('user can make an application in valid', () => {
+        let pq = ProjectQuestions.findOne({})
+
+        assert.ok(pq)
+
+        return callWithPromise('markProjectInvalid', {
+            projectId: pq._id
+        }).then(data => {
+            assert.ok(data.isInvalid)
+        })
+    })
 
     it ('moderator can remove submitted data', () => {
         let pq = ProjectQuestions.findOne({})

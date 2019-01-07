@@ -50,11 +50,16 @@ Template.App_home.helpers({
     	})
       if(user){
         return ProjectQuestions.find({
-          $or: [{
-              createdBy: Meteor.userId(),
-          }, {
-            'team_members.email': ((user.emails || [])[0] || {}).address 
-          }]
+            $or: [{
+                createdBy: Meteor.userId(),
+            }, {
+                'team_members.email': ((user.emails || [])[0] || {}).address 
+            }],
+            $or: [{
+                isInvalid: null
+            }, {
+                isInvalid : false
+            }]
         }, {
             sort: {
                 createdAt: -1

@@ -106,7 +106,12 @@ Template.modApplications.helpers({
                 {createdBy: {
                     $in: posAuthors
                 }}
-                ]
+                ],
+                $or: [{
+                    isInvalid: null
+                }, {
+                    isInvalid : false
+                }]
             }, {
                 sort: {
                     createdAt: -1
