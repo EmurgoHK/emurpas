@@ -7,6 +7,9 @@ Emurgo doesn't currently have a way to concisely track applications for the acce
 ## The solution
 The simplest possible solution to this problem is to create the most basic possible system to handle application forms. Emurpas is not intended to ever be complete because that implies being able to accurate predict what will be needed in future, so instead we use the C4 to iteratively build out the rest of the system based on the Serbian Model (logging problems and then sending minimal patches providing the simplest possible solution). This means Emurpas will be a living system that is able to frictionlessly keep up with changes in the blockchain landscape.
 
+## Reminder
+Do read your code after you write it and ask, “Can I make this simpler?” We do use a nice minimalist and yet readable style. Learn it, adopt it, use it.
+
 <details>
   <summary>How to run Emurpas locally</summary>
 <p>
