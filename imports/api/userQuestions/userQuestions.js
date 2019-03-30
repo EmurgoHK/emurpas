@@ -13,10 +13,6 @@ if (Meteor.isServer) {
         return UserQuestions.find({});
     });
 
-    Meteor.publish('userQuestions', function (userInfoID) {
-        return UserQuestions.find({ '_id' : userInfoID });
-    });
-
     Meteor.publish('userInfo', () => UserQuestions.find({
         createdBy: Meteor.userId()
     }))
