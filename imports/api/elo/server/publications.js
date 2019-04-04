@@ -1,15 +1,24 @@
-import { Meteor } from 'meteor/meteor'
+import { Meteor } from "meteor/meteor";
 
-import { EloRankings } from '../eloRankings'
+import { isModerator } from "../../user/methods";
+import { EloRankings } from "../eloRankings";
 
-Meteor.publish('elo', (apps) => { // publish all elo rankings tfor given apps
-	return EloRankings.find({
-		applicationId: {
-			$in: apps
-		}
-	}, {
-		sort: {
-			createdAt: -1
-		}
-	})
-})
+Meteor.publish("elo", apps => {
+  // publish all elo rankings tfor given apps
+  if (isModerator(Meteor.userId())) {
+    throw new Meteor.Error("Error", "Insufficient permissions.");
+  }
+
+  return EloRankings.find(
+    {
+      applicationId: {
+        $in: apps
+      }
+    },
+    {
+      sort: {
+        createdAt: -1
+      }
+    }
+  );
+});
