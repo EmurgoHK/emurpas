@@ -65,7 +65,7 @@ Template.sidebar.events({
             if (result.value) { // if the user clicks on new application
                 FlowRouter.go('/applications')
             } else if (checkboxInput != '') { // if user clicks cancel but there are no projects
-                Swal({
+                swal({
                     type: 'warning',
                     title: 'You do not have any applications',
                     text: 'You will now be redirected to applidations page where you can add a new project application',
