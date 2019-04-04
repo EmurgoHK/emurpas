@@ -35,3 +35,4 @@ forwarder:autoform-wizard
 blockrazor:subscache-c4
 reactive-dict@1.2.1
 littledata:synced-cron
+lamoglia:publish-aggregation
