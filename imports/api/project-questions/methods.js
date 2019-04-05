@@ -14,7 +14,6 @@ import { calculateFormRating } from "/imports/api/form-progress/methods";
 SimpleSchema.extendOptions(["autoform"]);
 
 // Auto Increment Index Number for Application ID
-
 function uniqueIndex(indexOf) {
   var countObj = ApplicationCount.findOne({
     type: indexOf
@@ -76,6 +75,14 @@ export const notifyApplication = (type, resId, fieldId, text) => {
   }
 };
 
+export function isTeamMember(project, userId) {
+	const user = Meteor.users.findOne(userId);
+	return project.createdBy === userId ||
+		   user.emails.some(email => 
+			project.team_members.some(m => m.email === email.address)
+		);
+}
+
 export const saveProjectQuestions = new ValidatedMethod({
   name: "saveProjectQuestions",
   validate(_params) {},
@@ -91,6 +98,11 @@ export const saveProjectQuestions = new ValidatedMethod({
           data.isInvalid = false;
           projectID = ProjectQuestions.insert(data, { validate: false });
         } else {
+		  const project = ProjectQuestions.findOne(projectID);
+		  if (!project || !isTeamMember(project, Meteor.userId())) {
+            throw new Meteor.Error("Error", `Application not found or insufficient permissions.`);
+		  }
+
           const progress = FormProgress.findOne({
             form_type: "project",
             form_type_id: projectID
@@ -149,7 +161,11 @@ export const markProjectInvalid = new ValidatedMethod({
   }),
   run({ projectId }) {
     if (Meteor.userId()) {
-      console.log("here");
+	  const project = ProjectQuestions.findOne(projectId);
+	  if (!project || !isTeamMember(project, Meteor.userId())) {
+	    throw new Meteor.Error("Error", `Application not found or insufficient permissions.`);
+	  }
+
       ProjectQuestions.update(
         { _id: projectId },
         {
