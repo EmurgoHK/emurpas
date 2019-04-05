@@ -7,7 +7,8 @@ import { FormProgress } from "/imports/api/form-progress/form-progress";
 import { markProjectInvalid } from "/imports/api/project-questions/methods";
 
 import swal from "sweetalert2";
-
+import { escapeHtml } from "../../helpers/htmlEscape";
+window.swal2 = swal;
 Template.sidebar.onCreated(function() {
   this.autorun(() => {
     this.subscribe("projectQuestions");
@@ -81,27 +82,14 @@ Template.sidebar.events({
           FlowRouter.go("/applications");
         } else if (result.dismiss === "cancel") {
           // if user cancels
-          const checkboxInput = `
-            <ul>
-              ${projects.map(
-                p =>
-                  `<li class="modal-radio-list">
-                    <input class="radio-button-modal" type="radio" 
-                          name="optionsRadios" id="${p._id}" value="${p._id}">
-                    <label for="${p._id}">
-                      ${p.problem_description}
-                    </label>
-                </li>`
-              )}
-            </ul>`;
           swal({
             type: "warning",
             title: "Please select an application to invalidate",
-            html: checkboxInput,
-            preConfirm: () => {
-              let radio = $(".radio-button-modal:checked");
-              return radio.length > 0 ? radio[0].value : "";
-            }
+            input: 'radio',
+            inputOptions: new Map(projects.map((p) => [
+              p._id, 
+              escapeHtml(p.problem_description), // It's important to escape, because internally the lib uses innerHtml
+            ]))
           }).then(result => {
             if (result.value && result.value.length > 0) {
               // update the application here
