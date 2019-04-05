@@ -13,7 +13,10 @@ export const addUserInfo = new ValidatedMethod({
                 userInfo.createdBy = Meteor.userId();
                 userInfoID = UserQuestions.insert(userInfo, {validate: false})
             } else {
-                UserQuestions.update({ '_id' : userInfoID }, { $set : _.extend(userInfo, { updatedAt: new Date().getTime() }) })
+				const res = UserQuestions.update({ '_id' : userInfoID, createdBy: Meteor.userId()}, { $set : _.extend(userInfo, { updatedAt: new Date().getTime() }) })
+				if (res !== 1) {
+					throw new Meteor.Error('Error.', 'You can\'t edit user info that you haven\'t created.')
+				}
             }
 
             updateFormProgress('user-info', userInfoID, '', steps)
